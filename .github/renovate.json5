@@ -12,7 +12,6 @@
       enabled: false,
       matchPackageNames: [
         'org.jetbrains.kotlin{/,}**',
-        'org.jetbrains.compose{/,}**',
         'com.google.devtools.ksp{/,}**',
         'org.jetbrains.kotlin-wrappers:kotlin-wrappers-bom{/,}**',
       ],
