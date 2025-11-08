@@ -50,7 +50,7 @@ class DefaultRootNavComponent(
       key = "RootNavigation",
       source = stackNavigation,
       initialConfiguration = Config.Loading,
-      serializer = Config.serializer(),
+      serializer = Config.serializer(), // for now leave the decompose do the serialization
       childFactory = ::childFactory
     )
 
