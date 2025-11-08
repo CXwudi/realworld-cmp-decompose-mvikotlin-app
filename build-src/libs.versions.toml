@@ -26,11 +26,11 @@ decompose = "3.4.0"
 mvikotlin = "4.3.0"
 koin = "4.1.1"
 kstore = "1.0.0"
-ktor = "3.3.1"
+ktor = "3.3.2"
 ktorfit = "2.6.4"
 
 junit = "6.0.1"
-http4k = "6.20.1.0"
+http4k = "6.20.2.0"
 exposed = "0.61.0"
 
 [libraries]
@@ -51,7 +51,7 @@ dev-frontend-mvikotlin = { module = "com.arkivanov.mvikotlin:mvikotlin", version
 dev-frontend-mvikotlinMain = { module = "com.arkivanov.mvikotlin:mvikotlin-main", version.ref = "mvikotlin" }
 dev-frontend-mvikotlinCoroutines = { module = "com.arkivanov.mvikotlin:mvikotlin-extensions-coroutines", version.ref = "mvikotlin" }
 dev-frontend-mvikotlinLogging = { module = "com.arkivanov.mvikotlin:mvikotlin-logging", version.ref = "mvikotlin" }
-dev-frontend-kotlinWrapper = "org.jetbrains.kotlin-wrappers:kotlin-wrappers-bom:2025.9.10"
+dev-frontend-kotlinWrapper = "org.jetbrains.kotlin-wrappers:kotlin-wrappers-bom:2025.11.5"
 
 dev-frontend-compose-adaptive = { module = "org.jetbrains.compose.material3.adaptive:adaptive", version.ref = "compose-adaptive" }
 dev-frontend-compose-adaptiveLayout = { module = "org.jetbrains.compose.material3.adaptive:adaptive-layout", version.ref = "compose-adaptive" }
