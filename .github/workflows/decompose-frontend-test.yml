@@ -34,6 +34,22 @@ jobs:
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v5
 
+    - name: Upgrade Kotlin yarn.lock (JS + Wasm)
+      if: github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/heads/renovate/')
+      working-directory: conduit-frontend
+      run: |
+        ./gradlew kotlinUpgradeYarnLock kotlinWasmUpgradeYarnLock
+        ./gradlew kotlinStoreYarnLock
+
+    - name: Upload updated yarn.locks
+      if: github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/heads/renovate/')
+      uses: actions/upload-artifact@v5
+      with:
+        name: updated-yarn-locks
+        path: |
+          conduit-frontend/kotlin-js-store/yarn.lock
+          conduit-frontend/kotlin-js-store/wasm/yarn.lock
+
     - name: Run Kotlin Multiplatform Tests on conduit-frontend
       working-directory: conduit-frontend
       run: |
