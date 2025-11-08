@@ -6,18 +6,16 @@
     ':automergeBranch',
   ],
   commitMessageAction: '⬆ upgrade',
+  schedule: [
+    '0 3 1-7 * 4',
+    '0 3 15-21 * 4',
+  ],
   timezone: 'America/Toronto',
   packageRules: [
     {
-      enabled: false,
-      matchPackageNames: [
-        'org.jetbrains.kotlin{/,}**',
-        'com.google.devtools.ksp{/,}**',
-        'org.jetbrains.kotlin-wrappers:kotlin-wrappers-bom{/,}**',
-      ],
-      excludePackageNames: [
-        'org.jetbrains.kotlinx{/,}**',
-      ],
+      "matchUpdateTypes": ["major", "minor", "patch", "pin", "digest"],
+      "groupName": "all dependencies",
+      "groupSlug": "all-deps"
     },
     {
       matchPackageNames: ['org.jetbrains.kotlinx:kotlinx-datetime'],

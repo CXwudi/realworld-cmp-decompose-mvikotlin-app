@@ -53,7 +53,7 @@ jobs:
     - name: Run Kotlin Multiplatform Tests on conduit-frontend
       working-directory: conduit-frontend
       run: |
-        ./gradlew :frontend-decompose-logic:cleanAllTests :frontend-decompose-logic:check
+        ./gradlew :frontend-decompose-logic:check
 
     - name: Upload build results
       uses: actions/upload-artifact@v5
