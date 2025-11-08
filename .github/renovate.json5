@@ -1,25 +1,41 @@
 {
-  $schema: 'https://docs.renovatebot.com/renovate-schema.json',
-  extends: [
-    'config:recommended',
-    ':automergeMinor',
-    ':automergeBranch',
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    ":dependencyDashboard",
+    ":semanticCommits"
   ],
-  commitMessageAction: '⬆ upgrade',
-  schedule: [
-    '0 3 1-7 * 4',
-    '0 3 15-21 * 4',
+  "commitMessageAction": "⬆ upgrade",
+  "schedule": [
+    "0 3 1-7 * 4",
+    "0 3 15-21 * 4"
   ],
-  timezone: 'America/Toronto',
-  packageRules: [
+  "timezone": "America/Toronto",
+  "prHourlyLimit": 3,
+  "prConcurrentLimit": 10,
+  "vulnerabilityAlerts": {
+    "enabled": true
+  },
+  "packageRules": [
     {
-      "matchUpdateTypes": ["major", "minor", "patch", "pin", "digest"],
-      "groupName": "all dependencies",
-      "groupSlug": "all-deps"
+      "matchUpdateTypes": ["patch", "digest"],
+      "groupName": "patch updates",
+      "automerge": true,
+      "platformAutomerge": true
     },
     {
-      matchPackageNames: ['org.jetbrains.kotlinx:kotlinx-datetime'],
-      allowedVersions: '!/compat/',
+      "matchUpdateTypes": ["minor"],
+      "groupName": "minor updates",
+      "minimumReleaseAge": "3 days"
+    },
+    {
+      "matchUpdateTypes": ["major"],
+      "groupName": "major updates",
+      "dependencyDashboardApproval": true
+    },
+    {
+      "matchPackageNames": ["org.jetbrains.kotlinx:kotlinx-datetime"],
+      "allowedVersions": "!/compat/"
     }
-  ],
+  ]
 }
