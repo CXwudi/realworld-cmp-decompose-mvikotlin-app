@@ -7,6 +7,7 @@ import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.replaceCurrent
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
+import com.arkivanov.essenty.statekeeper.ExperimentalStateKeeperApi
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
 import com.arkivanov.mvikotlin.extensions.coroutines.states
@@ -49,7 +50,11 @@ class DefaultMainNavComponent(
   val articleListDetailComponentFactory: ArticlesPanelNavComponentFactory,
 ) : MainNavComponent, ComponentContext by componentContext {
 
-  private val store = instanceKeeper.getStore { mainNavStoreFactory.createStore() }
+  @OptIn(ExperimentalStateKeeperApi::class)
+  private val store = instanceKeeper.getStore {
+    val state = stateKeeper.consume("MainNavState", MainNavState.serializer()) ?: MainNavState.notLoggedIn()
+    mainNavStoreFactory.createStore(initState = state)
+  }
 
   override val state: StateFlow<MainNavState> = store.stateFlow(coroutineScope())
 
@@ -60,8 +65,8 @@ class DefaultMainNavComponent(
   override val childStack: Value<ChildStack<*, MainNavComponentChild>> =
     childStack(
       source = stackNavigation,
-      initialConfiguration = Config.MainFeed,
-      serializer = Config.serializer(),
+      initialConfiguration = enumToConfig(store.state.currentMenuItem),
+      serializer = null,
       childFactory = ::childFactory
     )
 
@@ -69,6 +74,7 @@ class DefaultMainNavComponent(
     coroutineScope().launch {
       setupUserConfigStateToNavigationMapping()
     }
+    stateKeeper.register("MainNavState", MainNavState.serializer()) { state.value }
   }
 
   private suspend fun setupUserConfigStateToNavigationMapping() {

@@ -1,6 +1,9 @@
 package mikufan.cx.conduit.frontend.logic.component.main
 
+import kotlinx.serialization.Serializable
+
 @ConsistentCopyVisibility
+@Serializable
 data class MainNavState private constructor(
   val menuItems: List<MainNavMenuItem>,
   /**
@@ -10,9 +13,6 @@ data class MainNavState private constructor(
 ) {
   val currentMenuItem: MainNavMenuItem
     get() = menuItems[pageIndex]
-
-  @Deprecated("This method is unused and will be removed in a future version")
-  fun indexOfMenuItem(menuItem: MainNavMenuItem): Int? = menuItems.indexOf(menuItem).takeIf { it != -1 }
 
   val isLoggedIn: Boolean = menuItems.any { it is MainNavMenuItem.Favourite }
 
@@ -44,23 +44,28 @@ data class MainNavState private constructor(
   }
 }
 
+@Serializable
 sealed interface MainNavMenuItem {
   val menuName: String
-  
+
+  @Serializable
   data object Feed : MainNavMenuItem {
     override val menuName: String = "Feeds"
   }
-  
+
+  @Serializable
   data class Favourite(
     val username: String
   ) : MainNavMenuItem {
     override val menuName: String = "Favourites"
   }
-  
+
+  @Serializable
   data object Me : MainNavMenuItem {
     override val menuName: String = "Me"
   }
-  
+
+  @Serializable
   data object SignInUp : MainNavMenuItem {
     override val menuName: String = "Sign in/up"
   }
@@ -70,5 +75,5 @@ sealed interface MainNavMenuItem {
  * Intents for navigation in the main page
  */
 sealed interface MainNavIntent {
-  data class MenuIndexSwitching(val targetIndex: Int): MainNavIntent
+  data class MenuIndexSwitching(val targetIndex: Int) : MainNavIntent
 }
