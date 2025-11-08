@@ -1,5 +1,5 @@
 {
-  $schema: 'https://docs.renovatebot.com/renovate-schema.json',
+  '$schema': 'https://docs.renovatebot.com/renovate-schema.json',
   extends: [
     'config:recommended',
     ':automergeMinor',
@@ -13,9 +13,9 @@
   timezone: 'America/Toronto',
   packageRules: [
     {
-      "matchUpdateTypes": ["major", "minor", "patch", "pin", "digest"],
-      "groupName": "all dependencies",
-      "groupSlug": "all-deps"
+      matchUpdateTypes: ['major', 'minor', 'patch', 'pin', 'digest'],
+      groupName: 'all dependencies',
+      groupSlug: 'all-deps'
     },
     {
       matchPackageNames: ['org.jetbrains.kotlinx:kotlinx-datetime'],
