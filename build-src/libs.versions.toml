@@ -10,9 +10,9 @@
 # 
 [versions]
 kotlin = "2.2.21"
-ksp = "2.3.2"
+ksp = "2.3.3"
 java = "21"
-agp = "8.13.0" # ! if using Android plugin in IDEA, need to switch to a version that IDEA supports
+agp = "8.13.1" # ! if using Android plugin in IDEA, need to switch to a version that IDEA supports
 android-compileSdk = "36"
 android-targetSdk = "36" # setting targetSdk on per with compileSdk has great benefits, such as layout inspector
 android-minSdk = "26"
@@ -26,11 +26,11 @@ decompose = "3.4.0"
 mvikotlin = "4.3.0"
 koin = "4.1.1"
 kstore = "1.0.0"
-ktor = "3.3.2"
-ktorfit = "2.6.4"
+ktor = "3.3.3"
+ktorfit = "2.6.5"
 
 junit = "6.0.1"
-http4k = "6.20.2.0"
+http4k = "6.23.0.0"
 exposed = "0.61.0"
 
 [libraries]
@@ -51,7 +51,7 @@ dev-frontend-mvikotlin = { module = "com.arkivanov.mvikotlin:mvikotlin", version
 dev-frontend-mvikotlinMain = { module = "com.arkivanov.mvikotlin:mvikotlin-main", version.ref = "mvikotlin" }
 dev-frontend-mvikotlinCoroutines = { module = "com.arkivanov.mvikotlin:mvikotlin-extensions-coroutines", version.ref = "mvikotlin" }
 dev-frontend-mvikotlinLogging = { module = "com.arkivanov.mvikotlin:mvikotlin-logging", version.ref = "mvikotlin" }
-dev-frontend-kotlinWrapper = "org.jetbrains.kotlin-wrappers:kotlin-wrappers-bom:2025.11.5"
+dev-frontend-kotlinWrapper = "org.jetbrains.kotlin-wrappers:kotlin-wrappers-bom:2025.12.2"
 
 dev-frontend-compose-adaptive = { module = "org.jetbrains.compose.material3.adaptive:adaptive", version.ref = "compose-adaptive" }
 dev-frontend-compose-adaptiveLayout = { module = "org.jetbrains.compose.material3.adaptive:adaptive-layout", version.ref = "compose-adaptive" }
@@ -79,8 +79,8 @@ dev-frontend-kotlinxBrowser = "org.jetbrains.kotlinx:kotlinx-browser:0.5.0" # se
 # android
 dev-frontend-androidx-coreKtx = "androidx.core:core-ktx:1.17.0"
 dev-frontend-androidx-appcompat = "androidx.appcompat:appcompat:1.7.1"
-dev-frontend-androidx-lifecycleKtx = "androidx.lifecycle:lifecycle-runtime-ktx:2.9.4"
-dev-frontend-androidx-activityCompose = "androidx.activity:activity-compose:1.11.0"
+dev-frontend-androidx-lifecycleKtx = "androidx.lifecycle:lifecycle-runtime-ktx:2.10.0"
+dev-frontend-androidx-activityCompose = "androidx.activity:activity-compose:1.12.1"
 
 # backend
 dev-backend-http4kBom = { module = "org.http4k:http4k-bom", version.ref = "http4k" }
@@ -90,7 +90,7 @@ dev-backend-mockk = "io.mockk:mockk:1.14.6"
 dev-backend-hoplite-yaml = "com.sksamuel.hoplite:hoplite-yaml:2.9.0"
 dev-backend-postgresql = "org.postgresql:postgresql:42.7.8"
 dev-backend-hikari = "com.zaxxer:HikariCP:7.0.2"
-dev-backend-logback = "ch.qos.logback:logback-classic:1.5.20"
+dev-backend-logback = "ch.qos.logback:logback-classic:1.5.21"
 dev-backend-slf4j = "org.slf4j:slf4j-api:2.0.17"
 dev-backend-jwt = "com.auth0:java-jwt:4.5.0"
 
@@ -100,7 +100,7 @@ pluginDep-kotlinCompose = { module = "org.jetbrains.kotlin:compose-compiler-grad
 pluginDep-android = { module = "com.android.tools.build:gradle", version.ref = "agp" }
 pluginDep-compose = { module = "org.jetbrains.compose:compose-gradle-plugin", version.ref = "compose" }
 pluginDep-serialization = { module = "org.jetbrains.kotlin:kotlin-serialization", version.ref = "kotlin" }
-pluginDep-mokkery = "dev.mokkery:mokkery-gradle:3.0.0-Beta3"
+pluginDep-mokkery = "dev.mokkery:mokkery-gradle:3.0.0"
 
 # setting plugin dep
 settingDep-develocity = "com.gradle.develocity:com.gradle.develocity.gradle.plugin:4.2.2"
