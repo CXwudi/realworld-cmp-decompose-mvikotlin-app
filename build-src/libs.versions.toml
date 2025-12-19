@@ -9,7 +9,7 @@
 # }
 # 
 [versions]
-kotlin = "2.3.0"
+kotlin = "2.2.21" # Wait until ktorfit support it by support 2.3.0
 ksp = "2.3.4"
 java = "21"
 agp = "8.13.2" # ! if using Android plugin in IDEA, need to switch to a version that IDEA supports
