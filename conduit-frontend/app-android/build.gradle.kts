@@ -11,9 +11,8 @@ kotlin {
       implementation(project(":frontend-decompose-logic"))
       implementation(project(":frontend-compose-ui"))
 
-      implementation(compose.components.uiToolingPreview)
-      implementation(compose.uiTooling)
-      implementation(compose.preview)
+      implementation(libs.dev.frontend.compose.uiToolingPreview)
+      implementation(libs.dev.frontend.compose.uiTooling)
 
       implementation(libs.dev.frontend.androidx.appcompat)
       implementation(libs.dev.frontend.androidx.coreKtx)

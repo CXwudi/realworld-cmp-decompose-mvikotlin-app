@@ -15,11 +15,11 @@ kotlin {
       implementation(project.dependencies.platform(Libs.CoroutinesBom))
       implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core")
       // compose
-      implementation(compose.runtime)
-      implementation(compose.ui)
-      implementation(compose.foundation)
-      implementation(compose.material3)
-      implementation(compose.components.resources)
+      implementation(Libs.ComposeRuntime)
+      implementation(Libs.ComposeUi)
+      implementation(Libs.ComposeFoundation)
+      implementation(Libs.ComposeMaterial3)
+      implementation(Libs.ComposeResources)
       // decompose + mvikotlin
       implementation(Libs.Decompose)
       implementation(Libs.DecomposeCompose)

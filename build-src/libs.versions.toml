@@ -9,7 +9,7 @@
 # }
 # 
 [versions]
-kotlin = "2.3.0" # Wait until ktorfit support it by support 2.3.0
+kotlin = "2.2.21" # Wait until ktorfit support it by support 2.3.0
 ksp = "2.3.4"
 java = "21"
 agp = "8.13.2" # ! if using Android plugin in IDEA, need to switch to a version that IDEA supports
@@ -52,6 +52,17 @@ dev-frontend-mvikotlinMain = { module = "com.arkivanov.mvikotlin:mvikotlin-main"
 dev-frontend-mvikotlinCoroutines = { module = "com.arkivanov.mvikotlin:mvikotlin-extensions-coroutines", version.ref = "mvikotlin" }
 dev-frontend-mvikotlinLogging = { module = "com.arkivanov.mvikotlin:mvikotlin-logging", version.ref = "mvikotlin" }
 dev-frontend-kotlinWrapper = "org.jetbrains.kotlin-wrappers:kotlin-wrappers-bom:2025.12.12"
+
+# Compose Multiplatform core dependencies (direct Maven coordinates, replacing deprecated accessors)
+dev-frontend-compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "compose" }
+dev-frontend-compose-ui = { module = "org.jetbrains.compose.ui:ui", version.ref = "compose" }
+dev-frontend-compose-foundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "compose" }
+dev-frontend-compose-material3 = { module = "org.jetbrains.compose.material3:material3", version.ref = "compose" }
+dev-frontend-compose-material3AdaptiveNavigationSuite = { module = "org.jetbrains.compose.material3:material3-adaptive-navigation-suite", version.ref = "compose" }
+dev-frontend-compose-resources = { module = "org.jetbrains.compose.components:components-resources", version.ref = "compose" }
+dev-frontend-compose-uiTooling = { module = "org.jetbrains.compose.ui:ui-tooling", version.ref = "compose" }
+dev-frontend-compose-uiToolingPreview = { module = "org.jetbrains.compose.ui:ui-tooling-preview", version.ref = "compose" }
+dev-frontend-compose-desktopCommon = { module = "org.jetbrains.compose.desktop:desktop", version.ref = "compose" }
 
 dev-frontend-compose-adaptive = { module = "org.jetbrains.compose.material3.adaptive:adaptive", version.ref = "compose-adaptive" }
 dev-frontend-compose-adaptiveLayout = { module = "org.jetbrains.compose.material3.adaptive:adaptive-layout", version.ref = "compose-adaptive" }
@@ -100,7 +111,7 @@ pluginDep-kotlinCompose = { module = "org.jetbrains.kotlin:compose-compiler-grad
 pluginDep-android = { module = "com.android.tools.build:gradle", version.ref = "agp" }
 pluginDep-compose = { module = "org.jetbrains.compose:compose-gradle-plugin", version.ref = "compose" }
 pluginDep-serialization = { module = "org.jetbrains.kotlin:kotlin-serialization", version.ref = "kotlin" }
-pluginDep-mokkery = "dev.mokkery:mokkery-gradle:3.1.1" # update when ktorfit update with default support of kotlin 2.3.0
+pluginDep-mokkery = "dev.mokkery:mokkery-gradle:3.0.0" # update when ktorfit update with default support of kotlin 2.3.0
 
 # setting plugin dep
 settingDep-develocity = "com.gradle.develocity:com.gradle.develocity.gradle.plugin:4.3.1"
