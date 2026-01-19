@@ -9,7 +9,7 @@
 # }
 # 
 [versions]
-kotlin = "2.2.21" # Wait until ktorfit support it by support 2.3.0
+kotlin = "2.3.0"
 ksp = "2.3.4"
 java = "21"
 agp = "8.13.2" # ! if using Android plugin in IDEA, need to switch to a version that IDEA supports
@@ -112,7 +112,7 @@ pluginDep-kotlinCompose = { module = "org.jetbrains.kotlin:compose-compiler-grad
 pluginDep-android = { module = "com.android.tools.build:gradle", version.ref = "agp" }
 pluginDep-compose = { module = "org.jetbrains.compose:compose-gradle-plugin", version.ref = "compose" }
 pluginDep-serialization = { module = "org.jetbrains.kotlin:kotlin-serialization", version.ref = "kotlin" }
-pluginDep-mokkery = "dev.mokkery:mokkery-gradle:3.0.0" # update when ktorfit update with default support of kotlin 2.3.0
+pluginDep-mokkery = "dev.mokkery:mokkery-gradle:3.1.1"
 
 # setting plugin dep
 settingDep-develocity = "com.gradle.develocity:com.gradle.develocity.gradle.plugin:4.3.1"
