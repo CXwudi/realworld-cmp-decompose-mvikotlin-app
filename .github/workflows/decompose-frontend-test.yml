@@ -33,6 +33,11 @@ jobs:
 
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v5
+    
+    - name: Check compilation across all modules
+      working-directory: conduit-frontend
+      run: |
+        ./gradlew compileKotlinMetadata 
 
     - name: Upgrade Kotlin yarn.lock (JS + Wasm)
       if: github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/heads/renovate/')

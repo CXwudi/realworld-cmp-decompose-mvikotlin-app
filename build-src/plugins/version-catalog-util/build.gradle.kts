@@ -28,6 +28,17 @@ buildConfig {
     buildConfigStringField("Decompose", libs.dev.frontend.decompose)
     buildConfigStringField("DecomposeCompose", libs.dev.frontend.decomposeCompose)
 
+    // Compose Multiplatform
+    buildConfigStringField("ComposeRuntime", libs.dev.frontend.compose.runtime)
+    buildConfigStringField("ComposeUi", libs.dev.frontend.compose.ui)
+    buildConfigStringField("ComposeFoundation", libs.dev.frontend.compose.foundation)
+    buildConfigStringField("ComposeMaterial3", libs.dev.frontend.compose.material3)
+    buildConfigStringField("ComposeResources", libs.dev.frontend.compose.resources)
+    buildConfigStringField("ComposeUiTooling", libs.dev.frontend.compose.uiTooling)
+    buildConfigStringField("ComposeUiToolingPreview", libs.dev.frontend.compose.uiToolingPreview)
+    buildConfigStringField("ComposeMaterial3AdaptiveNavigationSuite", libs.dev.frontend.compose.material3AdaptiveNavigationSuite)
+    buildConfigStringField("ComposeDesktopCommon", libs.dev.frontend.compose.desktopCommon)
+
     // MVI Kotlin
     // likely this is only needed for decompose-logic module
 //    buildConfigStringField("MviKotlin", libs.dev.frontend.mvikotlin)

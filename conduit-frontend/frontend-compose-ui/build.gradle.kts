@@ -18,17 +18,17 @@ kotlin {
     commonMain.dependencies {
       implementation(project(":frontend-decompose-logic"))
 
-      implementation(compose.runtime)
-      implementation(compose.ui)
-      implementation(compose.foundation)
-      implementation(compose.material3)
-      implementation(compose.material3AdaptiveNavigationSuite)
+      implementation(libs.dev.frontend.compose.runtime)
+      implementation(libs.dev.frontend.compose.ui)
+      implementation(libs.dev.frontend.compose.foundation)
+      implementation(libs.dev.frontend.compose.material3)
+      implementation(libs.dev.frontend.compose.material3AdaptiveNavigationSuite)
       implementation(libs.dev.frontend.compose.adaptive)
       implementation(libs.dev.frontend.compose.adaptiveLayout)
       implementation(libs.dev.frontend.compose.adaptiveNavigation)
       implementation(libs.dev.frontend.compose.materialIconsCore)
-      implementation(compose.components.resources)
-      implementation(compose.components.uiToolingPreview)
+      implementation(libs.dev.frontend.compose.resources)
+      implementation(libs.dev.frontend.compose.uiToolingPreview)
 
       implementation(libs.dev.frontend.decomposeCompose)
       implementation(libs.dev.frontend.decomposeComposeExperimental)
@@ -48,11 +48,10 @@ kotlin {
 
     }
     commonJvmMain.dependencies {
-      implementation(compose.uiTooling)
-      implementation(compose.preview)
+      implementation(libs.dev.frontend.compose.uiTooling)
     }
     jvmMain.dependencies {
-      implementation(compose.desktop.common)
+      implementation(libs.dev.frontend.compose.desktopCommon)
     }
     androidMain.dependencies {
       implementation(libs.dev.frontend.androidx.activityCompose)
