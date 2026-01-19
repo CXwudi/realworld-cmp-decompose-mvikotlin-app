@@ -72,3 +72,6 @@ conduit-frontend/report/*
 .claude/
 .env
 ask_human*.md
+
+.gemini/
+gha-creds-*.json
