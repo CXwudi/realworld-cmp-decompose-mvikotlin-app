@@ -9,11 +9,13 @@ plugins {
   alias(libs.plugins.compose)
 }
 
-android {
-  namespace = "mikufan.cx.conduit.frontend.ui"
-}
-
 kotlin {
+  androidLibrary {
+    namespace = "mikufan.cx.conduit.frontend.ui"
+    androidResources {
+      enable = true
+    }
+  }
   sourceSets {
     commonMain.dependencies {
       implementation(project(":frontend-decompose-logic"))

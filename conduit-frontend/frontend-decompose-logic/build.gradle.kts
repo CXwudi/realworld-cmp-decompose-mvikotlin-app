@@ -14,11 +14,14 @@ plugins {
   alias(libs.plugins.ktorfit)
 }
 
-android {
-  namespace = "mikufan.cx.conduit.frontend.logic"
+ktorfit {
+  compilerPluginVersion.set("2.3.3")
 }
 
 kotlin {
+  androidLibrary {
+    namespace = "mikufan.cx.conduit.frontend.logic"
+  }
 
   sourceSets {
     commonMain.dependencies {

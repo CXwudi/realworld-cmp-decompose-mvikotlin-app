@@ -1,36 +1,28 @@
 plugins {
-  id("my.cmp-app")
   alias(libs.plugins.androidApplication)
+  alias(libs.plugins.kotlinCompose)
+  alias(libs.plugins.compose)
 }
 
-kotlin {
-  androidTarget()
+dependencies {
+  implementation(project(":frontend-decompose-logic"))
+  implementation(project(":frontend-compose-ui"))
 
-  sourceSets {
-    androidMain.dependencies {
-      implementation(project(":frontend-decompose-logic"))
-      implementation(project(":frontend-compose-ui"))
+  // Explicitly declare dependencies we directly import in MainActivity/MainApplication
+  implementation(libs.dev.frontend.decompose)
+  implementation(libs.dev.kotlinLogging)
+  implementation(platform(libs.dev.koinBom))
+  implementation("io.insert-koin:koin-core")
+  implementation("io.insert-koin:koin-android")
+  implementation("io.insert-koin:koin-androidx-startup")
 
-      implementation(libs.dev.frontend.compose.uiToolingPreview)
-      implementation(libs.dev.frontend.compose.uiTooling)
-
-      implementation(libs.dev.frontend.androidx.appcompat)
-      implementation(libs.dev.frontend.androidx.coreKtx)
-      implementation(libs.dev.frontend.androidx.activityCompose)
-
-      implementation("io.insert-koin:koin-android")
-      implementation("io.insert-koin:koin-androidx-startup")
-
-      implementation(libs.dev.frontend.slf4jAndroid)
-
-    }
-  }
-}
-
-java {
-  toolchain {
-    languageVersion.set(JavaLanguageVersion.of(libs.versions.java.get()))
-  }
+  // Android-specific dependencies
+  implementation(libs.dev.frontend.compose.uiToolingPreview)
+  implementation(libs.dev.frontend.compose.uiTooling)
+  implementation(libs.dev.frontend.androidx.appcompat)
+  implementation(libs.dev.frontend.androidx.coreKtx)
+  implementation(libs.dev.frontend.androidx.activityCompose)
+  implementation(libs.dev.frontend.slf4jAndroid)
 }
 
 android {
@@ -42,5 +34,11 @@ android {
     targetSdk = libs.versions.android.targetSdk.get().toInt()
     versionCode = 1
     versionName = "1.0"
+  }
+}
+
+java {
+  toolchain {
+    languageVersion.set(JavaLanguageVersion.of(libs.versions.java.get()))
   }
 }

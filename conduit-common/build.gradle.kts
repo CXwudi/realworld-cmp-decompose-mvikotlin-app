@@ -4,11 +4,10 @@ plugins {
 
 group = "mikufan.cx.conduit"
 
-android {
-  namespace = "mikufan.cx.conduit.common"
-}
-
 kotlin {
+  androidLibrary {
+    namespace = "mikufan.cx.conduit.common"
+  }
   sourceSets {
     val commonMain by getting {
       dependencies {

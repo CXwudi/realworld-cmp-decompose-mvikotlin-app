@@ -10,7 +10,7 @@ import org.jetbrains.kotlin.gradle.targets.js.yarn.YarnPlugin
  */
 plugins {
   kotlin("multiplatform")
-  id("com.android.library")
+  id("com.android.kotlin.multiplatform.library")
   kotlin("plugin.serialization")
 }
 
@@ -18,7 +18,11 @@ kotlin {
   compilerOptions {
     optIn.add("kotlin.time.ExperimentalTime")
   }
-  androidTarget()
+  androidLibrary {
+    compileSdk = Versions.AndroidCompileSdk
+    minSdk = Versions.AndroidMinSdk
+    // namespace will be set in consumer modules
+  }
   jvm()
   js(IR) {
     browser {
@@ -90,20 +94,6 @@ java {
   toolchain {
     languageVersion = JavaLanguageVersion.of(Versions.Java)
   }
-}
-
-android {
-  compileSdk = Versions.AndroidCompileSdk
-  defaultConfig {
-    minSdk = Versions.AndroidMinSdk
-  }
-  testOptions {
-    targetSdk = Versions.AndroidTargetSdk
-  }
-  lint {
-    targetSdk = Versions.AndroidTargetSdk
-  }
-  // jvm version is covered by java toolchain above
 }
 
 // convenient way to automatically update yarn.lock if dep changes
