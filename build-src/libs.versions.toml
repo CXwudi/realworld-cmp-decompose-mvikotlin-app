@@ -17,6 +17,7 @@ android-compileSdk = "36"
 android-targetSdk = "36" # setting targetSdk on per with compileSdk has great benefits, such as layout inspector
 android-minSdk = "26"
 compose = "1.10.0"
+compose-material3 = "1.9.0"
 compose-adaptive = "1.2.0"
 coil = "3.3.0"
 multiplatform-markdown-renderer = "0.39.1"
@@ -57,8 +58,8 @@ dev-frontend-kotlinWrapper = "org.jetbrains.kotlin-wrappers:kotlin-wrappers-bom:
 dev-frontend-compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "compose" }
 dev-frontend-compose-ui = { module = "org.jetbrains.compose.ui:ui", version.ref = "compose" }
 dev-frontend-compose-foundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "compose" }
-dev-frontend-compose-material3 = { module = "org.jetbrains.compose.material3:material3", version.ref = "compose" }
-dev-frontend-compose-material3AdaptiveNavigationSuite = { module = "org.jetbrains.compose.material3:material3-adaptive-navigation-suite", version.ref = "compose" }
+dev-frontend-compose-material3 = { module = "org.jetbrains.compose.material3:material3", version.ref = "compose-material3" }
+dev-frontend-compose-material3AdaptiveNavigationSuite = { module = "org.jetbrains.compose.material3:material3-adaptive-navigation-suite", version.ref = "compose-material3" }
 dev-frontend-compose-resources = { module = "org.jetbrains.compose.components:components-resources", version.ref = "compose" }
 dev-frontend-compose-uiTooling = { module = "org.jetbrains.compose.ui:ui-tooling", version.ref = "compose" }
 dev-frontend-compose-uiToolingPreview = { module = "org.jetbrains.compose.ui:ui-tooling-preview", version.ref = "compose" }
