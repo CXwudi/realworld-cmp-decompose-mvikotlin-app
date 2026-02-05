@@ -9,8 +9,8 @@
 # }
 # 
 [versions]
-kotlin = "2.3.0"
-ksp = "2.3.4"
+kotlin = "2.3.10"
+ksp = "2.3.5"
 java = "21"
 agp = "8.13.2" # ! if using Android plugin in IDEA, need to switch to a version that IDEA supports
 android-compileSdk = "36"
@@ -20,24 +20,24 @@ compose = "1.10.0"
 compose-material3 = "1.9.0"
 compose-adaptive = "1.2.0"
 coil = "3.3.0"
-multiplatform-markdown-renderer = "0.39.1"
+multiplatform-markdown-renderer = "0.39.2"
 
 essenty = "2.5.0"
 decompose = "3.4.0"
 mvikotlin = "4.3.0"
 koin = "4.1.1"
 kstore = "1.0.0"
-ktor = "3.3.3"
+ktor = "3.4.0"
 ktorfit = "2.7.2"
 
 junit = "6.0.2"
-http4k = "6.26.0.0"
+http4k = "6.27.0.0"
 exposed = "0.61.0"
 
 [libraries]
 # dev dep
 # multiplatform
-dev-serializationJson = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0"
+dev-serializationJson = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.10.0"
 dev-datetime = "org.jetbrains.kotlinx:kotlinx-datetime:0.7.1"
 dev-kotlinLogging = "io.github.oshai:kotlin-logging:7.0.14"
 dev-coroutinesBom = "org.jetbrains.kotlinx:kotlinx-coroutines-bom:1.10.2"
@@ -92,17 +92,17 @@ dev-frontend-kotlinxBrowser = "org.jetbrains.kotlinx:kotlinx-browser:0.5.0" # se
 dev-frontend-androidx-coreKtx = "androidx.core:core-ktx:1.17.0"
 dev-frontend-androidx-appcompat = "androidx.appcompat:appcompat:1.7.1"
 dev-frontend-androidx-lifecycleKtx = "androidx.lifecycle:lifecycle-runtime-ktx:2.10.0"
-dev-frontend-androidx-activityCompose = "androidx.activity:activity-compose:1.12.2"
+dev-frontend-androidx-activityCompose = "androidx.activity:activity-compose:1.12.3"
 
 # backend
 dev-backend-http4kBom = { module = "org.http4k:http4k-bom", version.ref = "http4k" }
 dev-backend-exposedBom = { module = "org.jetbrains.exposed:exposed-bom", version.ref = "exposed" }
 dev-backend-junitBom = { module = "org.junit:junit-bom", version.ref = "junit" }
-dev-backend-mockk = "io.mockk:mockk:1.14.7"
+dev-backend-mockk = "io.mockk:mockk:1.14.9"
 dev-backend-hoplite-yaml = "com.sksamuel.hoplite:hoplite-yaml:2.9.0"
 dev-backend-postgresql = "org.postgresql:postgresql:42.7.9"
 dev-backend-hikari = "com.zaxxer:HikariCP:7.0.2"
-dev-backend-logback = "ch.qos.logback:logback-classic:1.5.25"
+dev-backend-logback = "ch.qos.logback:logback-classic:1.5.27"
 dev-backend-slf4j = "org.slf4j:slf4j-api:2.0.17"
 dev-backend-jwt = "com.auth0:java-jwt:4.5.0"
 
@@ -115,7 +115,7 @@ pluginDep-serialization = { module = "org.jetbrains.kotlin:kotlin-serialization"
 pluginDep-mokkery = "dev.mokkery:mokkery-gradle:3.1.1"
 
 # setting plugin dep
-settingDep-develocity = "com.gradle.develocity:com.gradle.develocity.gradle.plugin:4.3.1"
+settingDep-develocity = "com.gradle.develocity:com.gradle.develocity.gradle.plugin:4.3.2"
 settingDep-foojayResolver = "org.gradle.toolchains:foojay-resolver:1.0.0"
 
 [plugins]
