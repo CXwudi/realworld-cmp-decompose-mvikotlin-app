@@ -3,8 +3,8 @@ package mikufan.cx.conduit.backend.db.repo
 import mikufan.cx.conduit.backend.db.User
 import mikufan.cx.conduit.backend.db.Users
 import mikufan.cx.conduit.common.UserRegisterDto
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.deleteWhere
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.jdbc.deleteWhere
 
 class UserRepo {
 
