@@ -5,11 +5,11 @@ on:
     branches:
       - main
       - master
-      - 'renovate/**'
-      - 'claude/**'
+      - "renovate/**"
+      - "claude/**"
     paths:
-      - 'conduit-frontend/frontend-decompose-logic/**'
-      - 'build-src/**'
+      - "conduit-frontend/frontend-decompose-logic/**"
+      - "build-src/**"
   workflow_dispatch:
 
 jobs:
@@ -17,52 +17,62 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v6
+      - name: Checkout code
+        uses: actions/checkout@v6
 
-    - name: Set up JDK
-      uses: actions/setup-java@v5
-      with:
-        java-version: '21'
-        distribution: 'temurin'
+      - name: Set up JDK
+        uses: actions/setup-java@v5
+        with:
+          java-version: "21"
+          distribution: "temurin"
 
-    - name: Set up Chromenium
-      uses: browser-actions/setup-chrome@v2
-      with:
-        chrome-version: stable
+      - name: Set up Chromenium
+        uses: browser-actions/setup-chrome@v2
+        with:
+          chrome-version: stable
 
-    - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@v5
-    
-    - name: Check compilation across all modules
-      working-directory: conduit-frontend
-      run: |
-        ./gradlew compileKotlinMetadata 
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v5
 
-    - name: Upgrade Kotlin yarn.lock (JS + Wasm)
-      if: github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/heads/renovate/')
-      working-directory: conduit-frontend
-      run: |
-        ./gradlew kotlinUpgradeYarnLock kotlinWasmUpgradeYarnLock
-        ./gradlew kotlinStoreYarnLock
+      - name: Check compilation across all modules
+        working-directory: conduit-frontend
+        run: |
+          ./gradlew compileKotlinMetadata
 
-    - name: Upload updated yarn.locks
-      if: github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/heads/renovate/')
-      uses: actions/upload-artifact@v6
-      with:
-        name: updated-yarn-locks
-        path: |
-          conduit-frontend/kotlin-js-store/yarn.lock
-          conduit-frontend/kotlin-js-store/wasm/yarn.lock
+      # Upgrade yarn.lock when dependencies may have changed:
+      # - workflow_dispatch: manual trigger
+      # - renovate branches: automated dependency updates
+      # - PR merge commits: merged PRs may introduce new dependencies
+      - name: Upgrade Kotlin yarn.lock (JS + Wasm)
+        if: >-
+          github.event_name == 'workflow_dispatch' ||
+          startsWith(github.ref, 'refs/heads/renovate/') ||
+          startsWith(github.event.head_commit.message, 'Merge pull request')
+        working-directory: conduit-frontend
+        run: |
+          ./gradlew kotlinUpgradeYarnLock kotlinWasmUpgradeYarnLock
+          ./gradlew kotlinStoreYarnLock
 
-    - name: Run Kotlin Multiplatform Tests on conduit-frontend
-      working-directory: conduit-frontend
-      run: |
-        ./gradlew :frontend-decompose-logic:check
+      - name: Upload updated yarn.locks
+        if: >-
+          github.event_name == 'workflow_dispatch' ||
+          startsWith(github.ref, 'refs/heads/renovate/') ||
+          startsWith(github.event.head_commit.message, 'Merge pull request')
+        uses: actions/upload-artifact@v6
+        with:
+          name: updated-yarn-locks
+          path: |
+            conduit-frontend/kotlin-js-store/yarn.lock
+            conduit-frontend/kotlin-js-store/wasm/yarn.lock
 
-    - name: Upload build results
-      uses: actions/upload-artifact@v6
-      if: always()
-      with:
-        name: frontend-build-results
-        path: conduit-frontend/frontend-decompose-logic/build/reports/
+      - name: Run Kotlin Multiplatform Tests on conduit-frontend
+        working-directory: conduit-frontend
+        run: |
+          ./gradlew :frontend-decompose-logic:check
+
+      - name: Upload build results
+        uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: frontend-build-results
+          path: conduit-frontend/frontend-decompose-logic/build/reports/
