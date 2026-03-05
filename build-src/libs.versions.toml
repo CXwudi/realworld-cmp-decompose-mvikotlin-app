@@ -12,14 +12,14 @@
 kotlin = "2.3.10"
 ksp = "2.3.6"
 java = "21"
-agp = "9.0.1" # ! if using Android plugin in IDEA, need to switch to a version that IDEA supports
+agp = "9.1.0" # ! if using Android plugin in IDEA, need to switch to a version that IDEA supports
 android-compileSdk = "36"
 android-targetSdk = "36" # setting targetSdk on per with compileSdk has great benefits, such as layout inspector
 android-minSdk = "26"
-compose = "1.10.1"
+compose = "1.10.2"
 compose-material3 = "1.9.0"
 compose-adaptive = "1.2.0"
-coil = "3.3.0"
+coil = "3.4.0"
 multiplatform-markdown-renderer = "0.39.2"
 
 essenty = "2.5.0"
@@ -27,12 +27,12 @@ decompose = "3.4.0"
 mvikotlin = "4.3.0"
 koin = "4.1.1"
 kstore = "1.0.0"
-ktor = "3.4.0"
+ktor = "3.4.1"
 ktorfit = "2.7.2"
 
 junit = "6.0.3"
-http4k = "6.30.0.0"
-exposed = "1.0.0"
+http4k = "6.31.1.0"
+exposed = "1.1.1"
 
 [libraries]
 # dev dep
@@ -52,7 +52,7 @@ dev-frontend-mvikotlin = { module = "com.arkivanov.mvikotlin:mvikotlin", version
 dev-frontend-mvikotlinMain = { module = "com.arkivanov.mvikotlin:mvikotlin-main", version.ref = "mvikotlin" }
 dev-frontend-mvikotlinCoroutines = { module = "com.arkivanov.mvikotlin:mvikotlin-extensions-coroutines", version.ref = "mvikotlin" }
 dev-frontend-mvikotlinLogging = { module = "com.arkivanov.mvikotlin:mvikotlin-logging", version.ref = "mvikotlin" }
-dev-frontend-kotlinWrapper = "org.jetbrains.kotlin-wrappers:kotlin-wrappers-bom:2026.2.15"
+dev-frontend-kotlinWrapper = "org.jetbrains.kotlin-wrappers:kotlin-wrappers-bom:2026.3.4"
 
 # Compose Multiplatform core dependencies (direct Maven coordinates, replacing deprecated accessors)
 dev-frontend-compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "compose" }
