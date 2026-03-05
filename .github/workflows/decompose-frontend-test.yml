@@ -58,7 +58,7 @@ jobs:
           github.event_name == 'workflow_dispatch' ||
           startsWith(github.ref, 'refs/heads/renovate/') ||
           startsWith(github.event.head_commit.message, 'Merge pull request')
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: updated-yarn-locks
           path: |
@@ -71,7 +71,7 @@ jobs:
           ./gradlew :frontend-decompose-logic:check
 
       - name: Upload build results
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: frontend-build-results
