@@ -5,7 +5,7 @@ plugins {
 group = "mikufan.cx.conduit"
 
 kotlin {
-  androidLibrary {
+  android {
     namespace = "mikufan.cx.conduit.common"
   }
   sourceSets {

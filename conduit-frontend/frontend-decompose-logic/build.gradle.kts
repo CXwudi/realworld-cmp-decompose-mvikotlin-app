@@ -19,7 +19,7 @@ ktorfit {
 }
 
 kotlin {
-  androidLibrary {
+  android {
     namespace = "mikufan.cx.conduit.frontend.logic"
   }
 

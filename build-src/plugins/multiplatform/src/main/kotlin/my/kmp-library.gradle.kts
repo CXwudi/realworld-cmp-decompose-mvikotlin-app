@@ -18,11 +18,12 @@ kotlin {
   compilerOptions {
     optIn.add("kotlin.time.ExperimentalTime")
   }
-  androidLibrary {
+  android {
     compileSdk = Versions.AndroidCompileSdk
     minSdk = Versions.AndroidMinSdk
     // namespace will be set in consumer modules
   }
+  // Gradle 9.4 `archives` deprecation is currently emitted by Kotlin MPP internals when creating JVM artifacts.
   jvm()
   js(IR) {
     browser {

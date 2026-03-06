@@ -10,7 +10,7 @@ plugins {
 }
 
 kotlin {
-  androidLibrary {
+  android {
     namespace = "mikufan.cx.conduit.frontend.ui"
     androidResources {
       enable = true
