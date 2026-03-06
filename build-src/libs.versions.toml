@@ -130,4 +130,4 @@ kotlinCompose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kot
 compose = { id = "org.jetbrains.compose", version.ref = "compose" }
 ktorfit = { id = "de.jensklingenberg.ktorfit", version.ref = "ktorfit" }
 # a plugin used by gradle files for precompiled script plugin
-buildConfig = { id = "com.github.gmazzo.buildconfig", version = "6.0.7" }
+buildConfig = { id = "com.github.gmazzo.buildconfig", version = "6.0.8" }
