@@ -44,20 +44,12 @@ jobs:
       # - renovate branches: automated dependency updates
       # - PR merge commits: merged PRs may introduce new dependencies
       - name: Upgrade Kotlin yarn.lock (JS + Wasm)
-        if: >-
-          github.event_name == 'workflow_dispatch' ||
-          startsWith(github.ref, 'refs/heads/renovate/') ||
-          startsWith(github.event.head_commit.message, 'Merge pull request')
         working-directory: conduit-frontend
         run: |
           ./gradlew kotlinUpgradeYarnLock kotlinWasmUpgradeYarnLock
           ./gradlew kotlinStoreYarnLock
 
       - name: Upload updated yarn.locks
-        if: >-
-          github.event_name == 'workflow_dispatch' ||
-          startsWith(github.ref, 'refs/heads/renovate/') ||
-          startsWith(github.event.head_commit.message, 'Merge pull request')
         uses: actions/upload-artifact@v7
         with:
           name: updated-yarn-locks
