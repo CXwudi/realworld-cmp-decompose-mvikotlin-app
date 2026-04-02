@@ -27,12 +27,12 @@ decompose = "3.5.0"
 mvikotlin = "4.3.0"
 koin = "4.2.0"
 kstore = "1.0.0"
-ktor = "3.4.1"
+ktor = "3.4.2"
 ktorfit = "2.7.2"
 
 junit = "6.0.3"
-http4k = "6.36.0.0"
-exposed = "1.1.1"
+http4k = "6.39.1.0"
+exposed = "1.2.0"
 
 [libraries]
 # dev dep
@@ -52,7 +52,7 @@ dev-frontend-mvikotlin = { module = "com.arkivanov.mvikotlin:mvikotlin", version
 dev-frontend-mvikotlinMain = { module = "com.arkivanov.mvikotlin:mvikotlin-main", version.ref = "mvikotlin" }
 dev-frontend-mvikotlinCoroutines = { module = "com.arkivanov.mvikotlin:mvikotlin-extensions-coroutines", version.ref = "mvikotlin" }
 dev-frontend-mvikotlinLogging = { module = "com.arkivanov.mvikotlin:mvikotlin-logging", version.ref = "mvikotlin" }
-dev-frontend-kotlinWrapper = "org.jetbrains.kotlin-wrappers:kotlin-wrappers-bom:2026.3.13"
+dev-frontend-kotlinWrapper = "org.jetbrains.kotlin-wrappers:kotlin-wrappers-bom:2026.4.0"
 
 # Compose Multiplatform core dependencies (direct Maven coordinates, replacing deprecated accessors)
 dev-frontend-compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "compose" }
@@ -115,7 +115,7 @@ pluginDep-serialization = { module = "org.jetbrains.kotlin:kotlin-serialization"
 pluginDep-mokkery = "dev.mokkery:mokkery-gradle:3.3.0"
 
 # setting plugin dep
-settingDep-develocity = "com.gradle.develocity:com.gradle.develocity.gradle.plugin:4.3.2"
+settingDep-develocity = "com.gradle.develocity:com.gradle.develocity.gradle.plugin:4.4.0"
 settingDep-foojayResolver = "org.gradle.toolchains:foojay-resolver:1.0.0"
 
 [plugins]
