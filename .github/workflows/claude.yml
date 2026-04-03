@@ -41,7 +41,7 @@ jobs:
           chrome-version: stable
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v5
+        uses: gradle/actions/setup-gradle@v6
 
       - name: Run Claude Code
         id: claude
