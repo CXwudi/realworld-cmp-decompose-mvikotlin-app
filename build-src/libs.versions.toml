@@ -12,7 +12,7 @@
 kotlin = "2.3.20"
 ksp = "2.3.6"
 java = "21"
-agp = "9.1.0" # ! if using Android plugin in IDEA, need to switch to a version that IDEA supports
+agp = "9.1.1" # ! if using Android plugin in IDEA, need to switch to a version that IDEA supports
 android-compileSdk = "36"
 android-targetSdk = "36" # setting targetSdk on per with compileSdk has great benefits, such as layout inspector
 android-minSdk = "26"
@@ -20,24 +20,24 @@ compose = "1.10.3"
 compose-material3 = "1.9.0"
 compose-adaptive = "1.2.0"
 coil = "3.4.0"
-multiplatform-markdown-renderer = "0.39.2"
+multiplatform-markdown-renderer = "0.40.2"
 
 essenty = "2.5.0"
 decompose = "3.5.0"
 mvikotlin = "4.3.0"
-koin = "4.2.0"
+koin = "4.2.1"
 kstore = "1.0.0"
 ktor = "3.4.2"
 ktorfit = "2.7.2"
 
 junit = "6.0.3"
-http4k = "6.39.1.0"
+http4k = "6.42.0.0"
 exposed = "1.2.0"
 
 [libraries]
 # dev dep
 # multiplatform
-dev-serializationJson = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.10.0"
+dev-serializationJson = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0"
 dev-datetime = "org.jetbrains.kotlinx:kotlinx-datetime:0.7.1"
 dev-kotlinLogging = "io.github.oshai:kotlin-logging:8.0.01"
 dev-coroutinesBom = "org.jetbrains.kotlinx:kotlinx-coroutines-bom:1.10.2"
@@ -52,7 +52,7 @@ dev-frontend-mvikotlin = { module = "com.arkivanov.mvikotlin:mvikotlin", version
 dev-frontend-mvikotlinMain = { module = "com.arkivanov.mvikotlin:mvikotlin-main", version.ref = "mvikotlin" }
 dev-frontend-mvikotlinCoroutines = { module = "com.arkivanov.mvikotlin:mvikotlin-extensions-coroutines", version.ref = "mvikotlin" }
 dev-frontend-mvikotlinLogging = { module = "com.arkivanov.mvikotlin:mvikotlin-logging", version.ref = "mvikotlin" }
-dev-frontend-kotlinWrapper = "org.jetbrains.kotlin-wrappers:kotlin-wrappers-bom:2026.4.1"
+dev-frontend-kotlinWrapper = "org.jetbrains.kotlin-wrappers:kotlin-wrappers-bom:2026.4.8"
 
 # Compose Multiplatform core dependencies (direct Maven coordinates, replacing deprecated accessors)
 dev-frontend-compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "compose" }
