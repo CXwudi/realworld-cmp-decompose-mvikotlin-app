@@ -28,7 +28,10 @@ mvikotlin = "4.4.0"
 koin = "4.2.1"
 kstore = "1.0.0"
 ktor = "3.5.0"
-ktorfit = "2.7.3"
+ktorfit-plugin = "2.7.2"
+ktorfit-lib = "2.7.3"
+ktorfit-converter = "2.7.2"
+ktorfit-compilerPlugin = "2.3.4"
 
 junit = "6.0.3"
 http4k = "6.47.0.0"
@@ -81,8 +84,8 @@ dev-frontend-markdownRenderer-code = { module = "com.mikepenz:multiplatform-mark
 dev-frontend-slf4jAndroid = "uk.uuid.slf4j:slf4j-android:2.0.17-0" # can't make kotlin-logging's android native log works for debug level, slf4j-android still works the best
 
 dev-frontend-ktorBom = { module = "io.ktor:ktor-bom", version.ref = "ktor" }
-dev-frontend-ktorfitLibLight = { module = "de.jensklingenberg.ktorfit:ktorfit-lib-light", version.ref = "ktorfit" }
-dev-frontend-ktorfitConverter = { module = "de.jensklingenberg.ktorfit:ktorfit-converters-response", version.ref = "ktorfit" }
+dev-frontend-ktorfitLibLight = { module = "de.jensklingenberg.ktorfit:ktorfit-lib-light", version.ref = "ktorfit-lib" }
+dev-frontend-ktorfitConverter = { module = "de.jensklingenberg.ktorfit:ktorfit-converters-response", version.ref = "ktorfit-converter" }
 dev-frontend-kstore = { module = "io.github.xxfast:kstore", version.ref = "kstore" }
 dev-frontend-kstore-file = { module = "io.github.xxfast:kstore-file", version.ref = "kstore" }
 dev-frontend-kstore-storage = { module = "io.github.xxfast:kstore-storage", version.ref = "kstore" }
@@ -128,6 +131,6 @@ androidKmpLibrary = { id = "com.android.kotlin.multiplatform.library", version.r
 serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlinCompose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 compose = { id = "org.jetbrains.compose", version.ref = "compose" }
-ktorfit = { id = "de.jensklingenberg.ktorfit", version.ref = "ktorfit" }
+ktorfit = { id = "de.jensklingenberg.ktorfit", version.ref = "ktorfit-plugin" }
 # a plugin used by gradle files for precompiled script plugin
 buildConfig = { id = "com.github.gmazzo.buildconfig", version = "6.0.9" }
