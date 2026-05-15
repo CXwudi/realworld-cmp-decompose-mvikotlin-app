@@ -15,7 +15,7 @@ plugins {
 }
 
 ktorfit {
-  compilerPluginVersion.set("2.3.3")
+  compilerPluginVersion.set(libs.versions.ktorfit.compilerPlugin)
 }
 
 kotlin {
