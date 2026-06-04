@@ -31,7 +31,7 @@ ktor = "3.5.0"
 ktorfit-plugin = "2.7.4"
 ktorfit-lib = "2.7.4"
 ktorfit-converter = "2.7.2"
-ktorfit-compilerPlugin = "2.3.4"
+ktorfit-compilerPlugin = "2.3.5"
 
 junit = "6.1.0"
 http4k = "6.51.0.0"
