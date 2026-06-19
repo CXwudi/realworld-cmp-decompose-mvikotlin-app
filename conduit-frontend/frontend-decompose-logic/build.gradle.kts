@@ -15,8 +15,8 @@ plugins {
 }
 
 ktorfit {
-  // Uncomment this when there is an issue without it
-  // compilerPluginVersion.set(libs.versions.ktorfit.compilerPlugin)
+  // The auto version resolution doesn't work for us. Reason unknown
+  compilerPluginVersion.set(libs.versions.ktorfit.compilerPlugin)
 }
 
 kotlin {
