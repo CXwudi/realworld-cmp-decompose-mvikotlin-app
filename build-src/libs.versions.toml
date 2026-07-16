@@ -9,10 +9,10 @@
 # }
 # 
 [versions]
-kotlin = "2.4.0"
-ksp = "2.3.9"
+kotlin = "2.4.10"
+ksp = "2.3.10"
 java = "21"
-agp = "9.2.1" # ! if using Android plugin in IDEA, need to switch to a version that IDEA supports
+agp = "9.3.0" # ! if using Android plugin in IDEA, need to switch to a version that IDEA supports
 android-compileSdk = "36"
 android-targetSdk = "36" # setting targetSdk on per with compileSdk has great benefits, such as layout inspector
 android-minSdk = "26"
@@ -33,8 +33,8 @@ ktorfit-lib = "2.7.5"
 ktorfit-converter = "2.7.5"
 ktorfit-compilerPlugin = "2.3.5"
 
-junit = "6.1.1"
-http4k = "6.54.0.0"
+junit = "6.1.2"
+http4k = "6.55.0.0"
 exposed = "1.3.1"
 
 [libraries]
@@ -55,7 +55,7 @@ dev-frontend-mvikotlin = { module = "com.arkivanov.mvikotlin:mvikotlin", version
 dev-frontend-mvikotlinMain = { module = "com.arkivanov.mvikotlin:mvikotlin-main", version.ref = "mvikotlin" }
 dev-frontend-mvikotlinCoroutines = { module = "com.arkivanov.mvikotlin:mvikotlin-extensions-coroutines", version.ref = "mvikotlin" }
 dev-frontend-mvikotlinLogging = { module = "com.arkivanov.mvikotlin:mvikotlin-logging", version.ref = "mvikotlin" }
-dev-frontend-kotlinWrapper = "org.jetbrains.kotlin-wrappers:kotlin-wrappers-bom:2026.7.0"
+dev-frontend-kotlinWrapper = "org.jetbrains.kotlin-wrappers:kotlin-wrappers-bom:2026.7.2"
 
 # Compose Multiplatform core dependencies (direct Maven coordinates, replacing deprecated accessors)
 dev-frontend-compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "compose" }
@@ -103,11 +103,11 @@ dev-backend-exposedBom = { module = "org.jetbrains.exposed:exposed-bom", version
 dev-backend-junitBom = { module = "org.junit:junit-bom", version.ref = "junit" }
 dev-backend-mockk = "io.mockk:mockk:1.14.11"
 dev-backend-hoplite-yaml = "com.sksamuel.hoplite:hoplite-yaml:2.9.0"
-dev-backend-postgresql = "org.postgresql:postgresql:42.7.12"
+dev-backend-postgresql = "org.postgresql:postgresql:42.7.13"
 dev-backend-hikari = "com.zaxxer:HikariCP:7.1.0"
-dev-backend-logback = "ch.qos.logback:logback-classic:1.5.37"
+dev-backend-logback = "ch.qos.logback:logback-classic:1.5.38"
 dev-backend-slf4j = "org.slf4j:slf4j-api:2.0.18"
-dev-backend-jwt = "com.auth0:java-jwt:4.5.2"
+dev-backend-jwt = "com.auth0:java-jwt:4.6.0"
 
 # plugin dep
 pluginDep-kotlin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
