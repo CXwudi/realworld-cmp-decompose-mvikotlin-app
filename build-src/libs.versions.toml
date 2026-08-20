@@ -20,7 +20,7 @@ compose = "1.11.1"
 compose-material3 = "1.9.0"
 compose-adaptive = "1.2.0"
 coil = "3.5.0"
-multiplatform-markdown-renderer = "0.43.0"
+multiplatform-markdown-renderer = "0.44.0"
 
 essenty = "2.5.0"
 decompose = "3.5.0"
@@ -34,7 +34,7 @@ ktorfit-converter = "2.7.5"
 ktorfit-compilerPlugin = "2.3.5"
 
 junit = "6.1.3"
-http4k = "6.57.1.0"
+http4k = "6.58.0.0"
 exposed = "1.4.0"
 
 [libraries]
@@ -55,7 +55,7 @@ dev-frontend-mvikotlin = { module = "com.arkivanov.mvikotlin:mvikotlin", version
 dev-frontend-mvikotlinMain = { module = "com.arkivanov.mvikotlin:mvikotlin-main", version.ref = "mvikotlin" }
 dev-frontend-mvikotlinCoroutines = { module = "com.arkivanov.mvikotlin:mvikotlin-extensions-coroutines", version.ref = "mvikotlin" }
 dev-frontend-mvikotlinLogging = { module = "com.arkivanov.mvikotlin:mvikotlin-logging", version.ref = "mvikotlin" }
-dev-frontend-kotlinWrapper = "org.jetbrains.kotlin-wrappers:kotlin-wrappers-bom:2026.8.0"
+dev-frontend-kotlinWrapper = "org.jetbrains.kotlin-wrappers:kotlin-wrappers-bom:2026.8.3"
 
 # Compose Multiplatform core dependencies (direct Maven coordinates, replacing deprecated accessors)
 dev-frontend-compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "compose" }
@@ -93,7 +93,7 @@ dev-frontend-kotlinxBrowser = "org.jetbrains.kotlinx:kotlinx-browser:0.5.0" # se
 
 # android
 dev-frontend-androidx-coreKtx = "androidx.core:core-ktx:1.19.0"
-dev-frontend-androidx-appcompat = "androidx.appcompat:appcompat:1.7.1"
+dev-frontend-androidx-appcompat = "androidx.appcompat:appcompat:1.8.0"
 dev-frontend-androidx-lifecycleKtx = "androidx.lifecycle:lifecycle-runtime-ktx:2.11.0"
 dev-frontend-androidx-activityCompose = "androidx.activity:activity-compose:1.13.0"
 
@@ -105,7 +105,7 @@ dev-backend-mockk = "io.mockk:mockk:1.14.11"
 dev-backend-hoplite-yaml = "com.sksamuel.hoplite:hoplite-yaml:2.9.0"
 dev-backend-postgresql = "org.postgresql:postgresql:42.7.13"
 dev-backend-hikari = "com.zaxxer:HikariCP:7.1.0"
-dev-backend-logback = "ch.qos.logback:logback-classic:1.6.1"
+dev-backend-logback = "ch.qos.logback:logback-classic:1.6.3"
 dev-backend-slf4j = "org.slf4j:slf4j-api:2.0.18"
 dev-backend-jwt = "com.auth0:java-jwt:4.6.0"
 
