@@ -25,7 +25,7 @@ kotlin {
   }
   // Gradle 9.4 `archives` deprecation is currently emitted by Kotlin MPP internals when creating JVM artifacts.
   jvm()
-  js(IR) {
+  js {
     browser {
       testTask {
         useKarma {
@@ -82,7 +82,7 @@ kotlin {
       implementation(kotlin("test"))
     }
 
-    val commonJvmMain by creating {
+    val commonJvmMain = create("commonJvmMain") {
       dependsOn(commonMain.get())
     }
     jvmMain.get().dependsOn(commonJvmMain)

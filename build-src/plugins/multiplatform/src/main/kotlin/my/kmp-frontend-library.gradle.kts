@@ -36,7 +36,7 @@ kotlin {
       implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test")
     }
 
-    val commonJvmMain by getting {
+    getByName("commonJvmMain") {
       dependencies {
         implementation("io.ktor:ktor-client-okhttp")
       }
