@@ -16,8 +16,12 @@ import mikufan.cx.conduit.frontend.logic.component.main.auth.AuthPageStoreFactor
 import mikufan.cx.conduit.frontend.logic.component.main.auth.AuthViewModelFactory
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticleDetailComponentFactory
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticleDetailStoreFactory
+import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticleDetailViewModelFactory
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListComponentFactory
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListStoreFactory
+import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListViewModelFactory
+import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesNavStoreFactory
+import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesNavViewModelFactory
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesPanelNavComponentFactory
 import mikufan.cx.conduit.frontend.logic.component.main.me.AddArticleComponentFactory
 import mikufan.cx.conduit.frontend.logic.component.main.me.AddArticleStoreFactory
@@ -53,6 +57,7 @@ val storeModule = module {
   single { AddArticleStoreFactory(get(), get()) }
   single { ArticlesListStoreFactory(get(), get()) }
   single { ArticleDetailStoreFactory(get(), get()) }
+  single { ArticlesNavStoreFactory(get()) }
 }
 
 /**
@@ -69,6 +74,9 @@ val componentFactoryModule = module {
   singleOf(::MePageViewModelFactory)
   singleOf(::EditProfileViewModelFactory)
   singleOf(::AddArticleViewModelFactory)
+  singleOf(::ArticlesNavViewModelFactory)
+  singleOf(::ArticlesListViewModelFactory)
+  singleOf(::ArticleDetailViewModelFactory)
   singleOf(::LegacyChildAdapterViewModelFactory)
   singleOf(::LegacyMainAdapterViewModelFactory)
   singleOf(::DefaultMainNavComponentFactory) bind MainNavComponentFactory::class

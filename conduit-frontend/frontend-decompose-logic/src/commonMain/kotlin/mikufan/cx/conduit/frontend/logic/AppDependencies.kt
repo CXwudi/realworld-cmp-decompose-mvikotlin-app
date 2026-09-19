@@ -5,6 +5,9 @@ import mikufan.cx.conduit.frontend.logic.component.legacy.LegacyChildAdapterView
 import mikufan.cx.conduit.frontend.logic.component.legacy.LegacyMainAdapterViewModelFactory
 import mikufan.cx.conduit.frontend.logic.component.main.MainNavViewModelFactory
 import mikufan.cx.conduit.frontend.logic.component.main.auth.AuthViewModelFactory
+import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticleDetailViewModelFactory
+import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListViewModelFactory
+import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesNavViewModelFactory
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesPanelNavComponentFactory
 import mikufan.cx.conduit.frontend.logic.component.main.me.AddArticleViewModelFactory
 import mikufan.cx.conduit.frontend.logic.component.main.me.EditProfileViewModelFactory
@@ -22,6 +25,9 @@ class AppDependencies(
   val landingViewModelFactory: LandingViewModelFactory,
   val mainNavViewModelFactory: MainNavViewModelFactory,
   val authViewModelFactory: AuthViewModelFactory,
+  val articlesNavViewModelFactory: ArticlesNavViewModelFactory,
+  val articlesListViewModelFactory: ArticlesListViewModelFactory,
+  val articleDetailViewModelFactory: ArticleDetailViewModelFactory,
   val legacyChildAdapterViewModelFactory: LegacyChildAdapterViewModelFactory,
   val articleListDetailComponentFactory: ArticlesPanelNavComponentFactory,
   val meNavComponentFactory: MeNavComponentFactory,

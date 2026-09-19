@@ -41,7 +41,7 @@ data class MeNavState(
 }
 
 /**
- * Intents accepted by the [MeNavStore].
+ * Intents accepted by [MeNavStoreFactory]'s store.
  */
 sealed interface MeNavIntent {
   /**

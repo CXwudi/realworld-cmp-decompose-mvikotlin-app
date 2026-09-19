@@ -36,14 +36,41 @@ import kotlinx.datetime.toLocalDateTime
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticleDetailComponent
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticleDetailInfo
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticleDetailIntent
+import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticleDetailViewModel
 import mikufan.cx.conduit.frontend.ui.common.ProfileImage
 import mikufan.cx.conduit.frontend.ui.common.layout.PageColumn
 import mikufan.cx.conduit.frontend.ui.theme.LocalSpace
 
 /**
- * Display the article detail screen.
- *
- * TODO: Implement the full article detail display with loading the article content.
+ * Display the article detail screen with a native [ArticleDetailViewModel].
+ */
+@Composable
+fun ArticleContent(
+  viewModel: ArticleDetailViewModel,
+  modifier: Modifier = Modifier,
+) {
+  val state by viewModel.state.collectAsState()
+
+  val titleState = remember { derivedStateOf { state.basicInfo.title } }
+  val authorThumbnailState = remember { derivedStateOf { state.basicInfo.authorThumbnail } }
+  val authorUsernameState = remember { derivedStateOf { state.basicInfo.authorUsername } }
+  val createdAtState = remember { derivedStateOf { state.detailInfo?.createdAt } }
+  val bodyState = remember { derivedStateOf { state.detailInfo?.bodyMarkdown ?: "Loading content..." } }
+
+  ArticleContentLayout(
+    titleState = titleState,
+    authorThumbnailState = authorThumbnailState,
+    authorUsernameState = authorUsernameState,
+    createdAtState = createdAtState,
+    bodyState = bodyState,
+    onBackToList = { viewModel.send(ArticleDetailIntent.BackToList) },
+    modifier = modifier,
+  )
+}
+
+/**
+ * Display the article detail screen with a legacy [ArticleDetailComponent].
+ * Retained for previews and backwards compatibility.
  */
 @Composable
 fun AnimatedVisibilityScope.ArticleContent(component: ArticleDetailComponent, modifier: Modifier = Modifier) {
@@ -56,6 +83,27 @@ fun AnimatedVisibilityScope.ArticleContent(component: ArticleDetailComponent, mo
   val createdAtState = remember { derivedStateOf { state.detailInfo?.createdAt } }
   val bodyState = remember { derivedStateOf { state.detailInfo?.bodyMarkdown ?: "Loading content..." } }
 
+  ArticleContentLayout(
+    titleState = titleState,
+    authorThumbnailState = authorThumbnailState,
+    authorUsernameState = authorUsernameState,
+    createdAtState = createdAtState,
+    bodyState = bodyState,
+    onBackToList = { component.send(ArticleDetailIntent.BackToList) },
+    modifier = modifier,
+  )
+}
+
+@Composable
+private fun ArticleContentLayout(
+  titleState: State<String>,
+  authorThumbnailState: State<String?>,
+  authorUsernameState: State<String>,
+  createdAtState: State<Instant?>,
+  bodyState: State<String>,
+  onBackToList: () -> Unit,
+  modifier: Modifier = Modifier,
+) {
   PageColumn(
     modifier = modifier
   ) {
@@ -63,7 +111,7 @@ fun AnimatedVisibilityScope.ArticleContent(component: ArticleDetailComponent, mo
 
     // Go back button
     IconButton(
-      onClick = { component.send(ArticleDetailIntent.BackToList) },
+      onClick = onBackToList,
       modifier = Modifier
         .align(Alignment.Start)
         .padding(horizontal = horizontalPadding)

@@ -36,11 +36,13 @@ import mikufan.cx.conduit.frontend.logic.component.main.MainNavMenuItem
 import mikufan.cx.conduit.frontend.logic.component.main.MainNavViewModel
 import mikufan.cx.conduit.frontend.logic.component.main.auth.AuthViewModel
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListDetailNavComponent
+import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesNavViewModel
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesSearchFilter
 import mikufan.cx.conduit.frontend.logic.component.main.me.MeNavComponent
 import mikufan.cx.conduit.frontend.logic.component.main.me.MeNavViewModel
 import mikufan.cx.conduit.frontend.ui.screen.main.auth.AuthPage
 import mikufan.cx.conduit.frontend.ui.screen.main.feed.ArticlesListDetailPanel
+import mikufan.cx.conduit.frontend.ui.screen.main.feed.ArticlesNavPage
 import mikufan.cx.conduit.frontend.ui.screen.main.me.MeNavPage
 
 /**
@@ -90,40 +92,39 @@ fun MainNavPage(
           entry<MainChildRoute.Feed>(
             clazzContentKey = { feedRoute -> "Feed_${feedRoute.generation}" },
           ) { feedRoute ->
-            val adapter: LegacyChildAdapterViewModel<ArticlesListDetailNavComponent> = viewModel(
-              key = "LegacyFeed_${feedRoute.generation}",
+            val navViewModel: ArticlesNavViewModel = viewModel(
+              key = "FeedNav_${feedRoute.generation}",
             ) {
               val savedStateHandle = createSavedStateHandle()
-              dependencies.legacyChildAdapterViewModelFactory.create(
+              dependencies.articlesNavViewModelFactory.create(
                 savedStateHandle = savedStateHandle,
-                saveKey = "legacy_feed",
-              ) { ctx ->
-                dependencies.articleListDetailComponentFactory.create(ctx)
-              }
+                searchFilter = ArticlesSearchFilter(),
+              )
             }
-            LegacySubtreeHost(adapter) { child ->
-              ArticlesListDetailPanel(child)
-            }
+            ArticlesNavPage(
+              articlesNavViewModel = navViewModel,
+              dependencies = dependencies,
+              modifier = Modifier.fillMaxSize(),
+            )
           }
 
           entry<MainChildRoute.Favourite>(
             clazzContentKey = { favRoute -> "Favourite_${favRoute.username}_${favRoute.generation}" },
           ) { favRoute ->
-            val adapter: LegacyChildAdapterViewModel<ArticlesListDetailNavComponent> = viewModel(
-              key = "LegacyFav_${favRoute.username}_${favRoute.generation}",
+            val navViewModel: ArticlesNavViewModel = viewModel(
+              key = "FavNav_${favRoute.username}_${favRoute.generation}",
             ) {
               val savedStateHandle = createSavedStateHandle()
-              val searchFilter = ArticlesSearchFilter(favoritedByUsername = favRoute.username)
-              dependencies.legacyChildAdapterViewModelFactory.create(
+              dependencies.articlesNavViewModelFactory.create(
                 savedStateHandle = savedStateHandle,
-                saveKey = "legacy_fav_${favRoute.username}",
-              ) { ctx ->
-                dependencies.articleListDetailComponentFactory.create(ctx, searchFilter)
-              }
+                searchFilter = ArticlesSearchFilter(favoritedByUsername = favRoute.username),
+              )
             }
-            LegacySubtreeHost(adapter) { child ->
-              ArticlesListDetailPanel(child)
-            }
+            ArticlesNavPage(
+              articlesNavViewModel = navViewModel,
+              dependencies = dependencies,
+              modifier = Modifier.fillMaxSize(),
+            )
           }
 
           entry<MainChildRoute.Me>(

@@ -17,7 +17,7 @@ private const val KEY_ME_NAV_SNAPSHOT = "me_nav_snapshot"
 private const val KEY_JSON_PAYLOAD = "json_payload"
 
 /**
- * Native CMP ViewModel owning the [MeNavStore].
+ * Native CMP ViewModel owning the store created by [MeNavStoreFactory].
  *
  * Responsibilities:
  * - Persists compact [MeNavSavedSnapshot] (stack routes and nextEntryId) in [SavedStateHandle].

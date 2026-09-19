@@ -69,11 +69,48 @@ import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticleInfo
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListComponent
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListIntent
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListLabel
+import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListViewModel
 import mikufan.cx.conduit.frontend.logic.component.main.feed.LoadMoreState
 import mikufan.cx.conduit.frontend.ui.common.BouncingDotsLoading
 import mikufan.cx.conduit.frontend.ui.common.ProfileImage
 import mikufan.cx.conduit.frontend.ui.theme.LocalSpace
 
+@Composable
+fun ArticlesList(
+  viewModel: ArticlesListViewModel,
+  modifier: Modifier = Modifier,
+) {
+  val articlesListState = viewModel.state.collectAsState()
+  val collectedThumbInfosState = remember {
+    derivedStateOf { articlesListState.value.collectedThumbInfos }
+  }
+  val loadMoreStateState = remember {
+    derivedStateOf { articlesListState.value.loadMoreState }
+  }
+
+  val gridState = rememberLazyGridState()
+
+  ArticlesListLoadEffect(
+    onLoadMore = { viewModel.send(ArticlesListIntent.LoadMore) },
+    itemsState = collectedThumbInfosState,
+    loadStateState = loadMoreStateState,
+    gridState = gridState
+  )
+  ArticlesListGrid(
+    itemsState = collectedThumbInfosState,
+    loadStateState = loadMoreStateState,
+    gridState = gridState,
+    onItemClick = { detail -> viewModel.send(ArticlesListIntent.ClickOnArticle(detail)) },
+    modifier = modifier,
+  )
+
+  // Handle error label: label and show error message as pop up
+  ArticlesListErrorAlert(viewModel.labels)
+}
+
+/**
+ * Legacy Decompose overload retained for previews and backwards compatibility.
+ */
 @Composable
 fun AnimatedVisibilityScope.ArticlesList(component: ArticlesListComponent) {
   val articlesListState = component.state.collectAsState()
@@ -163,6 +200,23 @@ private fun AnimatedVisibilityScope.ArticlesListGrid(
   gridState: LazyGridState,
   onItemClick: (ArticleBasicInfo) -> Unit
 ) {
+  ArticlesListGrid(
+    itemsState = itemsState,
+    loadStateState = loadStateState,
+    gridState = gridState,
+    onItemClick = onItemClick,
+    modifier = Modifier.animateEnterExit(),
+  )
+}
+
+@Composable
+private fun ArticlesListGrid(
+  itemsState: State<List<ArticleInfo>>,
+  loadStateState: State<LoadMoreState>,
+  gridState: LazyGridState,
+  onItemClick: (ArticleBasicInfo) -> Unit,
+  modifier: Modifier = Modifier,
+) {
   val space = LocalSpace.current
   val safePadding = WindowInsets.safeDrawing.asPaddingValues()
   val layoutDir = LocalLayoutDirection.current
@@ -184,7 +238,7 @@ private fun AnimatedVisibilityScope.ArticlesListGrid(
 
   LazyVerticalGrid(
     state = gridState,
-    modifier = Modifier.animateEnterExit(),
+    modifier = modifier,
     columns = GridCells.Adaptive(minSize = space.horizontal.maxContentSpace / 2),
     horizontalArrangement = Arrangement.spacedBy(space.horizontal.spacing),
     verticalArrangement = Arrangement.spacedBy(space.vertical.spacing),
