@@ -11,9 +11,9 @@
 [versions]
 kotlin = "2.4.20"
 ksp = "2.3.12"
-java = "21"
+java = "25"
 agp = "9.4.0" # ! if using Android plugin in IDEA, need to switch to a version that IDEA supports
-android-compileSdk = "36"
+android-compileSdk = "37"
 android-targetSdk = "36" # setting targetSdk on per with compileSdk has great benefits, such as layout inspector
 android-minSdk = "26"
 compose = "1.12.0"
@@ -22,8 +22,11 @@ compose-adaptive = "1.2.0"
 coil = "3.6.2"
 multiplatform-markdown-renderer = "0.45.0"
 
-essenty = "2.6.0"
-decompose = "3.5.0"
+androidx-lifecycle = "2.11.0"
+androidx-navigation3 = "1.1.1"
+androidx-savedstate = "1.4.0"
+robolectric = "4.16.1"
+
 mvikotlin = "4.4.0"
 koin = "4.2.2"
 kstore = "1.1.0"
@@ -47,10 +50,6 @@ dev-coroutinesBom = "org.jetbrains.kotlinx:kotlinx-coroutines-bom:1.11.0"
 dev-koinBom = { module = "io.insert-koin:koin-bom", version.ref = "koin" }
 
 # frontend
-dev-frontend-essentyLifecycleCoroutines = { module = "com.arkivanov.essenty:lifecycle-coroutines", version.ref = "essenty" }
-dev-frontend-decompose = { module = "com.arkivanov.decompose:decompose", version.ref = "decompose" }
-dev-frontend-decomposeCompose = { module = "com.arkivanov.decompose:extensions-compose", version.ref = "decompose" }
-dev-frontend-decomposeComposeExperimental = { module = "com.arkivanov.decompose:extensions-compose-experimental", version.ref = "decompose" }
 dev-frontend-mvikotlin = { module = "com.arkivanov.mvikotlin:mvikotlin", version.ref = "mvikotlin" }
 dev-frontend-mvikotlinMain = { module = "com.arkivanov.mvikotlin:mvikotlin-main", version.ref = "mvikotlin" }
 dev-frontend-mvikotlinCoroutines = { module = "com.arkivanov.mvikotlin:mvikotlin-extensions-coroutines", version.ref = "mvikotlin" }
@@ -94,14 +93,27 @@ dev-frontend-kotlinxBrowser = "org.jetbrains.kotlinx:kotlinx-browser:0.5.0" # se
 # android
 dev-frontend-androidx-coreKtx = "androidx.core:core-ktx:1.19.0"
 dev-frontend-androidx-appcompat = "androidx.appcompat:appcompat:1.8.0"
-dev-frontend-androidx-lifecycleKtx = "androidx.lifecycle:lifecycle-runtime-ktx:2.11.0"
+dev-frontend-androidx-lifecycleKtx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "androidx-lifecycle" }
 dev-frontend-androidx-activityCompose = "androidx.activity:activity-compose:1.13.0"
+
+# Lifecycle, ViewModel, SavedState & Navigation 3 (KMP native)
+dev-frontend-androidx-lifecycle-common = { module = "androidx.lifecycle:lifecycle-common", version.ref = "androidx-lifecycle" }
+dev-frontend-androidx-lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel", version.ref = "androidx-lifecycle" }
+dev-frontend-androidx-lifecycle-viewmodelCompose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "androidx-lifecycle" }
+dev-frontend-androidx-lifecycle-viewmodelSavedstate = { module = "androidx.lifecycle:lifecycle-viewmodel-savedstate", version.ref = "androidx-lifecycle" }
+dev-frontend-androidx-lifecycle-viewmodelNavigation3 = { module = "androidx.lifecycle:lifecycle-viewmodel-navigation3", version.ref = "androidx-lifecycle" }
+dev-frontend-androidx-lifecycle-runtimeCompose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }
+dev-frontend-navigation3-ui = { module = "org.jetbrains.androidx.navigation3:navigation3-ui", version.ref = "androidx-navigation3" }
+dev-frontend-navigation3-runtime = { module = "androidx.navigation3:navigation3-runtime", version.ref = "androidx-navigation3" }
+dev-frontend-androidx-savedstate = { module = "androidx.savedstate:savedstate", version.ref = "androidx-savedstate" }
+dev-frontend-androidx-savedstateCompose = { module = "androidx.savedstate:savedstate-compose", version.ref = "androidx-savedstate" }
 
 # backend
 dev-backend-http4kBom = { module = "org.http4k:http4k-bom", version.ref = "http4k" }
 dev-backend-exposedBom = { module = "org.jetbrains.exposed:exposed-bom", version.ref = "exposed" }
 dev-backend-junitBom = { module = "org.junit:junit-bom", version.ref = "junit" }
 dev-backend-mockk = "io.mockk:mockk:1.14.11"
+dev-frontend-test-robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
 dev-backend-hoplite-yaml = "com.sksamuel.hoplite:hoplite-yaml:2.9.0"
 dev-backend-postgresql = "org.postgresql:postgresql:42.7.13"
 dev-backend-hikari = "com.zaxxer:HikariCP:7.1.0"

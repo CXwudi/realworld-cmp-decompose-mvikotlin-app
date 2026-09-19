@@ -7,7 +7,7 @@ kotlin {
   sourceSets {
     jvmMain {
       dependencies {
-        implementation(project(":frontend-decompose-logic"))
+        implementation(project(":frontend-logic"))
         implementation(project(":frontend-compose-ui"))
         implementation(compose.desktop.currentOs)
       }

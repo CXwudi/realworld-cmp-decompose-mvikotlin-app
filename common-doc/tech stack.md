@@ -24,7 +24,8 @@ For LLM: Kotlin is not properly configured in VSCode, so ignore any Kotlin impor
 ## Frontend
 
 - [Compose Multiplatform](https://www.jetbrains.com/compose-multiplatform/) - Declarative UI framework by JetBrains
-- [Decompose](https://arkivanov.github.io/Decompose/) - Lifecycle-aware components and navigation for Kotlin Multiplatform
+- [Jetpack Navigation 3](https://developer.android.com/guide/navigation/navigation-3) - Next-generation multiplatform navigation and scene display framework
+- [AndroidX / CMP ViewModel & SavedState](https://developer.android.com/topic/libraries/architecture/viewmodel) - Native lifecycle-scoped state management and process-death restoration
 - [MVIKotlin](https://arkivanov.github.io/MVIKotlin/) - MVI pattern implementation for Kotlin Multiplatform
 - [Coil](https://coil-kt.github.io/coil/) - Image loading for Android and Compose Multiplatform
 - [Coroutines](https://kotlinlang.org/docs/coroutines-guide.html) - Asynchronous programming framework
@@ -41,8 +42,3 @@ For LLM: Kotlin is not properly configured in VSCode, so ignore any Kotlin impor
 - [Docker](https://www.docker.com/) - for backend services
 - [GitHub](https://github.com/) - git and CI
 - [draw.io](https://www.drawio.com/) - for diagrams
-
-### AI Tools
-
-- [Cline](https://cline.bot/): Autonomous coding agent right in your IDE
-- [Augment Code](https://www.augmentcode.com/): AI-powered coding platform for professional software engineers

@@ -21,29 +21,53 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.repeatOnLifecycle
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.launch
-import mikufan.cx.conduit.frontend.logic.component.landing.LandingPageComponent
+import kotlinx.coroutines.flow.StateFlow
 import mikufan.cx.conduit.frontend.logic.component.landing.LandingPageIntent
 import mikufan.cx.conduit.frontend.logic.component.landing.LandingPageLabel
+import mikufan.cx.conduit.frontend.logic.component.landing.LandingPageState
+import mikufan.cx.conduit.frontend.logic.component.landing.LandingViewModel
 import mikufan.cx.conduit.frontend.ui.theme.LocalSpace
 
+/**
+ * Landing page Composable taking native [LandingViewModel].
+ */
 @Composable
-fun LandingPage(component: LandingPageComponent, modifier: Modifier = Modifier) {
+fun LandingPage(viewModel: LandingViewModel, modifier: Modifier = Modifier) {
+  LandingPage(
+    state = viewModel.state,
+    labels = viewModel.labels,
+    onSend = viewModel::send,
+    modifier = modifier,
+  )
+}
 
-  val state by component.state.collectAsState()
-  val urlText = remember { derivedStateOf { state.url } }
+/**
+ * Plain state/intent/label Composable contract for Landing page.
+ */
+@Composable
+fun LandingPage(
+  state: StateFlow<LandingPageState>,
+  labels: Flow<LandingPageLabel>,
+  onSend: (LandingPageIntent) -> Unit,
+  modifier: Modifier = Modifier,
+) {
+  val currentState by state.collectAsState()
+  val urlText = remember { derivedStateOf { currentState.url } }
 
-  showErrorAlert(labels = component.labels)
+  showErrorAlert(labels = labels)
 
   Box(
     contentAlignment = Alignment.Center,
@@ -56,38 +80,35 @@ fun LandingPage(component: LandingPageComponent, modifier: Modifier = Modifier) 
       OutlinedTextField(
         value = urlText.value,
         label = { Text("URL") },
-        onValueChange = { component.send(LandingPageIntent.TextChanged(it)) },
+        onValueChange = { onSend(LandingPageIntent.TextChanged(it)) },
         singleLine = true,
       )
-      Button(onClick = { component.send(LandingPageIntent.CheckAndMoveToMainPage) }) {
+      Button(onClick = { onSend(LandingPageIntent.CheckAndMoveToMainPage) }) {
         Text("Connect")
       }
     }
-
   }
 }
 
 @Composable
 private fun showErrorAlert(labels: Flow<LandingPageLabel>) {
-  // almost not possible to animate it, as dialog are drawn outside of current tree
-  // see https://github.com/JetBrains/compose-multiplatform/issues/4431
-  
   val errorMsgState = remember { mutableStateOf("") }
   val showErrorAlert by remember { derivedStateOf { errorMsgState.value.isNotBlank() } }
-  
-  val scope = rememberCoroutineScope()
-  scope.launch {
-    labels.collect { label ->
-      when (label) {
-        is LandingPageLabel.Failure -> {
-          errorMsgState.value = label.message
+
+  val lifecycleOwner = LocalLifecycleOwner.current
+  LaunchedEffect(labels, lifecycleOwner) {
+    lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+      labels.collect { label ->
+        when (label) {
+          is LandingPageLabel.Failure -> {
+            errorMsgState.value = label.message
+          }
+          else -> {}
         }
-        // Handle other labels if necessary
-        else -> {}
       }
     }
   }
-  
+
   if (showErrorAlert) {
     AlertDialog(
       onDismissRequest = { errorMsgState.value = "" },

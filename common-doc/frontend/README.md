@@ -2,17 +2,17 @@
 
 For Human Contributors: You need to follow this [guide](https://www.jetbrains.com/help/kotlin-multiplatform-dev/multiplatform-setup.html#check-your-environment) to set up the Compose Multiplatform development environment.
 
-The frontend target Android, Desktop, and Web in both Kotlin/JS and Kotlin/wasmJs. iOS platform is not supported but gradle has already configured the iOS source set, and some codes for iOS is already written.
+The frontend targets Android, Desktop, and Web (in both Kotlin/JS and Kotlin/wasmJs). The iOS platform is configured in Gradle source sets, but remains explicitly unsupported and unverified at runtime.
 
 ## Structure
 
-The [`conduit-frontend`](../../conduit-frontend) module is further divided into several modules as following:
+The [`conduit-frontend`](../../conduit-frontend) module is divided into several modules:
 
-- [`frontend-decompose-logic`](../../conduit-frontend/frontend-decompose-logic): The shared business logic and navigation logic implemented with Decompose and MVIKotlin.
-- [`frontend-compose-ui`](../../conduit-frontend/frontend-compose-ui): The Compose UI implementation.
-- [`app-android`](../../conduit-frontend/app-android): The Android app implementation.
-- [`app-desktop`](../../conduit-frontend/app-desktop): The Desktop app implementation.
-- [`app-web`](../../conduit-frontend/app-web): The Web app implementation.
+- [`frontend-logic`](../../conduit-frontend/frontend-logic): The shared business logic, MVIKotlin stores/reducers, navigation state, and native AndroidX/CMP ViewModels. Free of Compose UI dependencies.
+- [`frontend-compose-ui`](../../conduit-frontend/frontend-compose-ui): The Compose Multiplatform UI implementation using Navigation 3 scenes, adaptive layouts, and entry-scoped ViewModels.
+- [`app-android`](../../conduit-frontend/app-android): The Android app entry point and Activity hosting.
+- [`app-desktop`](../../conduit-frontend/app-desktop): The Desktop app entry point and window lifecycle management.
+- [`app-web`](../../conduit-frontend/app-web): The Web app entry point (JS/WasmJs) with asynchronous initialization and native ComposeViewport lifecycle.
 
 ## Architecture Diagram
 
@@ -21,10 +21,10 @@ flowchart TD
     web["Web/Js+Wasm"]
     desktop["Desktop/JVM"]
     android["Android/JVM"]
-    ios["iOS/Native (configured but not supported)"]
+    ios["iOS/Native (configured but unsupported)"]
     
     ui["frontend-compose-ui"]
-    logic["frontend-decompose-logic"]
+    logic["frontend-logic"]
     
     web --> ui
     desktop --> ui
@@ -33,13 +33,45 @@ flowchart TD
     
     ui --> logic
     
-    %% iOS style to indicate not fully supported
+    %% iOS style to indicate unsupported
     classDef iosStyle stroke-dasharray: 5 5;
     ios:::iosStyle
 ```
 
-## About Testing
+## Testing & Verification Commands
 
-`conduit-frontend` contains multiplatform tests that run on all 4 platforms. The shared [`kmp-library.gradle.kts`](../../build-src/plugins/multiplatform/src/main/kotlin/my/kmp-library.gradle.kts) convention enables Android host tests with `withHostTest {}`, so `commonTest` also runs on the Android target. From `conduit-frontend`, run `./gradlew :conduit-common:testAndroidHostTest :frontend-decompose-logic:testAndroidHostTest` to execute these tests without an emulator.
+`conduit-frontend` includes comprehensive test suites covering all supported targets:
 
-Tests on the JS and Wasm platforms require a browser. The same convention uses `useChromiumHeadless()` locally, which means you need to install Chromium/Chrome for running tests on these platforms. If you have another browser, feel free to change to `useFirefox()` (or any other browser supported by Karma) for your convenience.
+### Four-Target Logic Tests (`frontend-logic`)
+
+From the `conduit-frontend` directory, run individual target suites:
+
+```bash
+# JVM target test suite
+./gradlew :frontend-logic:jvmTest
+
+# Android target host suite (Robolectric SDK 35, no emulator required)
+./gradlew :frontend-logic:testAndroidHostTest
+
+# Kotlin/JS browser suite (Chromium headless)
+./gradlew :frontend-logic:jsBrowserTest
+
+# Kotlin/WasmJs browser suite (Chromium headless)
+./gradlew :frontend-logic:wasmJsBrowserTest
+```
+
+### UI Tests (`frontend-compose-ui`)
+
+Runs Navigation 3 scene tests, resize ownership verification, and desktop SavedState handoff checks:
+
+```bash
+./gradlew :frontend-compose-ui:jvmTest
+```
+
+### All Tests in One Command
+
+```bash
+./gradlew :frontend-logic:jvmTest :frontend-logic:testAndroidHostTest :frontend-logic:jsBrowserTest :frontend-logic:wasmJsBrowserTest :frontend-compose-ui:jvmTest
+```
+
+Tests on the JS and Wasm platforms require Chromium/Chrome. The convention plugin uses `useChromiumHeadless()` locally.

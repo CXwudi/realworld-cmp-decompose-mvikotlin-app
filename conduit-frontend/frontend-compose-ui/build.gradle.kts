@@ -1,7 +1,7 @@
 /**
  * The pure UI module in Compose Multiplatform.
  *
- * All navigation, state, routing, etc. should go to the [frontend-decompose-logic] module.
+ * All navigation, state, routing, etc. should go to the [frontend-logic] module.
  */
 plugins {
   id("my.kmp-frontend-library")
@@ -18,7 +18,7 @@ kotlin {
   }
   sourceSets {
     commonMain.dependencies {
-      implementation(project(":frontend-decompose-logic"))
+      implementation(project(":frontend-logic"))
 
       implementation(libs.dev.frontend.compose.runtime)
       implementation(libs.dev.frontend.compose.ui)
@@ -32,9 +32,12 @@ kotlin {
       implementation(libs.dev.frontend.compose.resources)
       implementation(libs.dev.frontend.compose.uiToolingPreview)
 
-      implementation(libs.dev.frontend.decomposeCompose)
-      implementation(libs.dev.frontend.decomposeComposeExperimental)
-      implementation("io.insert-koin:koin-compose")
+      implementation(libs.dev.frontend.navigation3.ui)
+      implementation(libs.dev.frontend.navigation3.runtime)
+      implementation(libs.dev.frontend.androidx.lifecycle.viewmodelCompose)
+      implementation(libs.dev.frontend.androidx.lifecycle.viewmodelNavigation3)
+      implementation(libs.dev.frontend.androidx.lifecycle.runtimeCompose)
+      implementation(libs.dev.frontend.androidx.savedstateCompose)
 
       implementation(libs.dev.frontend.coil.compose)
       implementation(libs.dev.frontend.coil.ktor3)
@@ -55,9 +58,12 @@ kotlin {
     jvmMain.dependencies {
       implementation(libs.dev.frontend.compose.desktopCommon)
     }
+    jvmTest.dependencies {
+      implementation(compose.desktop.currentOs)
+      implementation(compose.desktop.uiTestJUnit4)
+    }
     androidMain.dependencies {
       implementation(libs.dev.frontend.androidx.activityCompose)
-      implementation("io.insert-koin:koin-androidx-compose")
     }
   }
 }

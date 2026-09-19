@@ -1,0 +1,98 @@
+name: Frontend Multiplatform & UI Tests
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+    types: [opened, synchronize, reopened, ready_for_review, edited]
+
+permissions:
+  contents: read
+  actions: read
+  pull-requests: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  check-master:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    outputs:
+      run-tests: ${{ steps.check.outputs.result }}
+    steps:
+      - uses: actions/checkout@v7
+      - name: Check whether the merged PR already passed this suite
+        id: check
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const shouldRun = require('./.github/scripts/ci-should-run.cjs');
+            return await shouldRun({ github, context, core, workflowId: 'frontend-logic-test.yml' });
+
+  test:
+    needs: check-master
+    if: >-
+      !cancelled() && (
+        (github.event_name == 'push' && needs.check-master.outputs.run-tests != 'false') ||
+        (github.event_name == 'pull_request' &&
+          github.event.pull_request.state == 'open' && !github.event.pull_request.draft)
+      )
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Set up JDK
+        uses: actions/setup-java@v6
+        with:
+          java-version: "25"
+          distribution: "temurin"
+
+      - name: Set up Chromenium
+        uses: browser-actions/setup-chrome@v2
+        with:
+          chrome-version: stable
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
+
+      - name: Check compilation across all modules
+        working-directory: conduit-frontend
+        run: |
+          ./gradlew compileKotlinMetadata
+
+      # Refresh lockfiles before testing JS and Wasm dependency changes.
+      - name: Upgrade Kotlin yarn.lock (JS + Wasm)
+        working-directory: conduit-frontend
+        run: |
+          ./gradlew kotlinUpgradeYarnLock kotlinWasmUpgradeYarnLock
+          ./gradlew kotlinStoreYarnLock
+
+      - name: Upload updated yarn.locks
+        uses: actions/upload-artifact@v7
+        with:
+          name: updated-yarn-locks
+          path: |
+            conduit-frontend/kotlin-js-store/yarn.lock
+            conduit-frontend/kotlin-js-store/wasm/yarn.lock
+
+      - name: Run Kotlin Multiplatform Tests on conduit-frontend
+        working-directory: conduit-frontend
+        run: |
+          ./gradlew :frontend-logic:check
+          xvfb-run ./gradlew :frontend-compose-ui:jvmTest
+
+      - name: Upload build results
+        uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: frontend-build-results
+          path: |
+            conduit-frontend/frontend-logic/build/reports/
+            conduit-frontend/frontend-compose-ui/build/reports/

@@ -22,14 +22,32 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import mikufan.cx.conduit.frontend.logic.component.main.me.AddArticleComponent
+import kotlinx.coroutines.flow.StateFlow
 import mikufan.cx.conduit.frontend.logic.component.main.me.AddArticleIntent
+import mikufan.cx.conduit.frontend.logic.component.main.me.AddArticleState
+import mikufan.cx.conduit.frontend.logic.component.main.me.AddArticleViewModel
 import mikufan.cx.conduit.frontend.ui.common.layout.PageColumn
 import mikufan.cx.conduit.frontend.ui.theme.LocalSpace
 
 @Composable
-fun AddArticlePage(addArticleComponent: AddArticleComponent, modifier: Modifier = Modifier) {
-  val model by addArticleComponent.state.collectAsState()
+fun AddArticlePage(viewModel: AddArticleViewModel, modifier: Modifier = Modifier) {
+  AddArticlePage(
+    stateFlow = viewModel.state,
+    onSend = viewModel::send,
+    modifier = modifier,
+  )
+}
+
+/**
+ * Plain state/intent Composable contract for Add article page.
+ */
+@Composable
+fun AddArticlePage(
+  stateFlow: StateFlow<AddArticleState>,
+  onSend: (AddArticleIntent) -> Unit,
+  modifier: Modifier = Modifier,
+) {
+  val model by stateFlow.collectAsState()
 
   PageColumn(
     modifier = modifier
@@ -41,7 +59,7 @@ fun AddArticlePage(addArticleComponent: AddArticleComponent, modifier: Modifier 
     val errorMsgState = remember { derivedStateOf { model.errorMsg } }
 
     IconButton(
-      onClick = { addArticleComponent.send(AddArticleIntent.BackWithoutPublish) },
+      onClick = { onSend(AddArticleIntent.BackWithoutPublish) },
       modifier = Modifier
         .align(Alignment.Start)
         .padding(horizontal = LocalSpace.current.horizontal.padding)
@@ -54,7 +72,7 @@ fun AddArticlePage(addArticleComponent: AddArticleComponent, modifier: Modifier 
 
     OutlinedTextField(
       value = title,
-      onValueChange = { addArticleComponent.send(AddArticleIntent.TitleChanged(it)) },
+      onValueChange = { onSend(AddArticleIntent.TitleChanged(it)) },
       label = { Text("Title") },
       singleLine = true,
       modifier = Modifier
@@ -64,7 +82,7 @@ fun AddArticlePage(addArticleComponent: AddArticleComponent, modifier: Modifier 
 
     OutlinedTextField(
       value = description,
-      onValueChange = { addArticleComponent.send(AddArticleIntent.DescriptionChanged(it)) },
+      onValueChange = { onSend(AddArticleIntent.DescriptionChanged(it)) },
       label = { Text("Description") },
       singleLine = true,
       modifier = Modifier
@@ -74,7 +92,7 @@ fun AddArticlePage(addArticleComponent: AddArticleComponent, modifier: Modifier 
 
     OutlinedTextField(
       value = body,
-      onValueChange = { addArticleComponent.send(AddArticleIntent.BodyChanged(it)) },
+      onValueChange = { onSend(AddArticleIntent.BodyChanged(it)) },
       label = { Text("Article Content") },
       minLines = 5,
       modifier = Modifier
@@ -84,7 +102,7 @@ fun AddArticlePage(addArticleComponent: AddArticleComponent, modifier: Modifier 
 
     OutlinedTextField(
       value = tagList,
-      onValueChange = { addArticleComponent.send(AddArticleIntent.TagListChanged(it)) },
+      onValueChange = { onSend(AddArticleIntent.TagListChanged(it)) },
       label = { Text("Tags") },
       singleLine = true,
       modifier = Modifier
@@ -93,7 +111,7 @@ fun AddArticlePage(addArticleComponent: AddArticleComponent, modifier: Modifier 
     )
 
     Button(
-      onClick = { addArticleComponent.send(AddArticleIntent.Publish) },
+      onClick = { onSend(AddArticleIntent.Publish) },
       modifier = Modifier.padding(horizontal = LocalSpace.current.horizontal.padding),
     ) {
       Text("Publish")

@@ -5,16 +5,14 @@ plugins {
 }
 
 dependencies {
-  implementation(project(":frontend-decompose-logic"))
+  implementation(project(":frontend-logic"))
   implementation(project(":frontend-compose-ui"))
 
   // Explicitly declare dependencies we directly import in MainActivity/MainApplication
-  implementation(libs.dev.frontend.decompose)
   implementation(libs.dev.kotlinLogging)
   implementation(platform(libs.dev.koinBom))
   implementation("io.insert-koin:koin-core")
   implementation("io.insert-koin:koin-android")
-  implementation("io.insert-koin:koin-androidx-startup")
 
   // Android-specific dependencies
   implementation(libs.dev.frontend.compose.uiToolingPreview)
@@ -40,5 +38,13 @@ android {
 java {
   toolchain {
     languageVersion.set(JavaLanguageVersion.of(libs.versions.java.get()))
+  }
+}
+
+configurations.configureEach {
+  resolutionStrategy.eachDependency {
+    if (requested.group == "org.jetbrains.androidx.lifecycle" || requested.group == "androidx.lifecycle") {
+      useVersion(libs.versions.androidx.lifecycle.get())
+    }
   }
 }

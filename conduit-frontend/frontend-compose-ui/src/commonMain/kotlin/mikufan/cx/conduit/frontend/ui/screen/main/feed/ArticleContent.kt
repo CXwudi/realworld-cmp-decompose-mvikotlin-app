@@ -1,6 +1,5 @@
 package mikufan.cx.conduit.frontend.ui.screen.main.feed
 
-import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -30,32 +29,71 @@ import com.mikepenz.markdown.compose.elements.highlightedCodeBlock
 import com.mikepenz.markdown.compose.elements.highlightedCodeFence
 import com.mikepenz.markdown.m3.Markdown
 import kotlin.time.Instant
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.number
 import kotlinx.datetime.toLocalDateTime
-import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticleDetailComponent
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticleDetailInfo
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticleDetailIntent
+import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticleDetailState
+import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticleDetailViewModel
 import mikufan.cx.conduit.frontend.ui.common.ProfileImage
 import mikufan.cx.conduit.frontend.ui.common.layout.PageColumn
 import mikufan.cx.conduit.frontend.ui.theme.LocalSpace
 
 /**
- * Display the article detail screen.
- *
- * TODO: Implement the full article detail display with loading the article content.
+ * Display the article detail screen with a native [ArticleDetailViewModel].
  */
 @Composable
-fun AnimatedVisibilityScope.ArticleContent(component: ArticleDetailComponent, modifier: Modifier = Modifier) {
-  val state by component.state.collectAsState()
+fun ArticleContent(
+  viewModel: ArticleDetailViewModel,
+  modifier: Modifier = Modifier,
+) {
+  ArticleContent(
+    state = viewModel.state,
+    onBackToList = { viewModel.send(ArticleDetailIntent.BackToList) },
+    modifier = modifier,
+  )
+}
 
-  // Use remember and derivedStateOf for fields retrieved from state
-  val titleState = remember { derivedStateOf { state.basicInfo.title } }
-  val authorThumbnailState = remember { derivedStateOf { state.basicInfo.authorThumbnail } }
-  val authorUsernameState = remember { derivedStateOf { state.basicInfo.authorUsername } }
-  val createdAtState = remember { derivedStateOf { state.detailInfo?.createdAt } }
-  val bodyState = remember { derivedStateOf { state.detailInfo?.bodyMarkdown ?: "Loading content..." } }
+/**
+ * Display the article detail screen with plain state/intent lambda contracts.
+ */
+@Composable
+fun ArticleContent(
+  state: StateFlow<ArticleDetailState>,
+  onBackToList: () -> Unit,
+  modifier: Modifier = Modifier,
+) {
+  val currentState by state.collectAsState()
 
+  val titleState = remember { derivedStateOf { currentState.basicInfo.title } }
+  val authorThumbnailState = remember { derivedStateOf { currentState.basicInfo.authorThumbnail } }
+  val authorUsernameState = remember { derivedStateOf { currentState.basicInfo.authorUsername } }
+  val createdAtState = remember { derivedStateOf { currentState.detailInfo?.createdAt } }
+  val bodyState = remember { derivedStateOf { currentState.detailInfo?.bodyMarkdown ?: "Loading content..." } }
+
+  ArticleContentLayout(
+    titleState = titleState,
+    authorThumbnailState = authorThumbnailState,
+    authorUsernameState = authorUsernameState,
+    createdAtState = createdAtState,
+    bodyState = bodyState,
+    onBackToList = onBackToList,
+    modifier = modifier,
+  )
+}
+
+@Composable
+private fun ArticleContentLayout(
+  titleState: State<String>,
+  authorThumbnailState: State<String?>,
+  authorUsernameState: State<String>,
+  createdAtState: State<Instant?>,
+  bodyState: State<String>,
+  onBackToList: () -> Unit,
+  modifier: Modifier = Modifier,
+) {
   PageColumn(
     modifier = modifier
   ) {
@@ -63,7 +101,7 @@ fun AnimatedVisibilityScope.ArticleContent(component: ArticleDetailComponent, mo
 
     // Go back button
     IconButton(
-      onClick = { component.send(ArticleDetailIntent.BackToList) },
+      onClick = onBackToList,
       modifier = Modifier
         .align(Alignment.Start)
         .padding(horizontal = horizontalPadding)

@@ -48,24 +48,46 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import androidx.window.core.layout.WindowWidthSizeClass
-import mikufan.cx.conduit.frontend.logic.component.main.me.MePageComponent
+import kotlinx.coroutines.flow.StateFlow
 import mikufan.cx.conduit.frontend.logic.component.main.me.MePageIntent
 import mikufan.cx.conduit.frontend.logic.component.main.me.MePageState
+import mikufan.cx.conduit.frontend.logic.component.main.me.MePageViewModel
 import mikufan.cx.conduit.frontend.ui.common.ProfileImage
 import mikufan.cx.conduit.frontend.ui.theme.LocalSpace
 
 /**
- * The main composable for the Me page that displays the user's profile.
+ * The main composable for the Me page that displays the user's profile using native [MePageViewModel].
  *
- * @param mePageComponent The component that manages the Me page's state and logic
+ * @param viewModel The native ViewModel managing the Me page's state and logic
  * @param modifier Optional modifier for customizing the layout
  */
 @Composable
-fun MePage(mePageComponent: MePageComponent, modifier: Modifier = Modifier) {
+fun MePage(viewModel: MePageViewModel, modifier: Modifier = Modifier) {
+  MePage(
+    state = viewModel.state,
+    onSend = viewModel::send,
+    modifier = modifier,
+  )
+}
+
+/**
+ * Plain state/intent Composable contract for Me page.
+ */
+@Composable
+fun MePage(
+  state: StateFlow<MePageState>,
+  onSend: (MePageIntent) -> Unit,
+  modifier: Modifier = Modifier,
+) {
   MePageScaffold(
-    onButtonClick = { mePageComponent.send(MePageIntent.AddArticle) },
+    onButtonClick = { onSend(MePageIntent.AddArticle) },
   ) { paddingValues ->
-    MePageContent(mePageComponent, paddingValues)
+    MePageContent(
+      stateFlow = state,
+      onSend = onSend,
+      paddingValues = paddingValues,
+      modifier = modifier,
+    )
   }
 }
 
@@ -103,12 +125,13 @@ private fun MePageScaffold(
  */
 @Composable
 private fun MePageContent(
-  mePageComponent: MePageComponent,
+  stateFlow: StateFlow<MePageState>,
+  onSend: (MePageIntent) -> Unit,
   paddingValues: PaddingValues,
   modifier: Modifier = Modifier,
 ) {
 
-  val model by mePageComponent.state.collectAsState()
+  val model by stateFlow.collectAsState()
 
   val parentColumnPadding = PaddingValues(
     top = LocalSpace.current.vertical.padding,
@@ -158,17 +181,17 @@ private fun MePageContent(
       verticalArrangement = Arrangement.spacedBy(LocalSpace.current.vertical.spacing),
     ) {
       Button(
-        onClick = { mePageComponent.send(MePageIntent.EditProfile) },
+        onClick = { onSend(MePageIntent.EditProfile) },
         enabled = editProfileButtonEnabled
       ) {
         Text("Edit Profile")
       }
 
-      Button(onClick = { mePageComponent.send(MePageIntent.Logout) }) {
+      Button(onClick = { onSend(MePageIntent.Logout) }) {
         Text("Logout")
       }
 
-      Button(onClick = { mePageComponent.send(MePageIntent.SwitchServer) }) {
+      Button(onClick = { onSend(MePageIntent.SwitchServer) }) {
         Text("Switch Server")
       }
     }

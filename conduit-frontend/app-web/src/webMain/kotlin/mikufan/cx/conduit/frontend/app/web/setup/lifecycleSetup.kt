@@ -1,64 +1,54 @@
 package mikufan.cx.conduit.frontend.app.web.setup
 
-import com.arkivanov.essenty.lifecycle.LifecycleRegistry
-import com.arkivanov.essenty.lifecycle.doOnDestroy
-import com.arkivanov.essenty.lifecycle.resume
-import com.arkivanov.essenty.lifecycle.stop
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
-import web.dom.DocumentVisibilityState
-import web.dom.document
-import web.dom.visible
-import web.events.EventHandler
+import web.events.addHandler
+import web.window.pageHideEvent
+import web.window.unloadEvent
+import web.window.window
+
+private val log = KotlinLogging.logger { }
 
 /**
- * Attaches the lifecycle of this `LifecycleRegistry` to the document's visibility state.
+ * Launches the web application within a scoped coroutine, ensuring asynchronous
+ * startup and orderly DI/coroutine teardown upon page unload.
  *
- * This method observes the `document.visibilityState` and adjusts the lifecycle state
- * of the registry accordingly:
- * - Calls `resume` if the document is visible.
- * - Calls `stop` if the document is hidden.
- *
- * It sets an `onvisibilitychange` event handler on the document to monitor visibility state changes
- * and updates the lifecycle state in real time.
- *
- * Copied and adapted from
- * https://github.com/arkivanov/Decompose/blob/master/sample/app-js-compose/src/jsMain/kotlin/com/arkivanov/decompose/sample/app/Main.kt
- *
+ * Lifecycle management is natively handled by ComposeViewport (mapping window
+ * focus/blur to ON_RESUME/ON_PAUSE, and document visibilitychange to ON_START/ON_STOP).
  */
-fun LifecycleRegistry.attachToDocument() {
-  fun onVisibilityChanged() {
-    if (document.visibilityState == DocumentVisibilityState.visible) {
-      resume()
-    } else {
-      stop()
-    }
-  }
-  document.onvisibilitychange = EventHandler { onVisibilityChanged() }
-  onVisibilityChanged()
-}
-
-/**
- * Launches an application within the lifecycle scope and manages its lifecycle events.
- * Cancels the associated coroutine scope when the lifecycle is destroyed.
- *
- * @param appLaunch A suspend lambda that contains the main application logic to be executed within a coroutine.
- */
-fun LifecycleRegistry.launchApp(appLaunch: suspend CoroutineScope.() -> Unit) {
+fun launchApp(
+  onShutdown: () -> Unit = {},
+  appLaunch: suspend CoroutineScope.() -> Unit,
+) {
   val appScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
   appScope.launch {
     appLaunch()
   }
 
-  doOnDestroy {
-    log.info { "Shutting down" }
-    appScope.cancel("App is destroyed")
+  var cleanedUp = false
+  fun cleanup() {
+    if (!cleanedUp) {
+      cleanedUp = true
+      log.info { "Shutting down web application" }
+      onShutdown()
+      appScope.cancel("Web page unloaded")
+    }
+  }
+
+  // Handle page navigation / unload without destroying on BFCache preservation
+  window.pageHideEvent.addHandler { event ->
+    if (!event.persisted) {
+      cleanup()
+    }
+  }
+
+  // Fallback for browsers or situations where pagehide is bypassed
+  window.unloadEvent.addHandler {
+    cleanup()
   }
 }
-
-private val log = KotlinLogging.logger { }
