@@ -1,7 +1,7 @@
 /**
  * The pure UI module in Compose Multiplatform.
  *
- * All navigation, state, routing, etc. should go to the [frontend-decompose-logic] module.
+ * All navigation, state, routing, etc. should go to the [frontend-logic] module.
  */
 plugins {
   id("my.kmp-frontend-library")
@@ -18,7 +18,7 @@ kotlin {
   }
   sourceSets {
     commonMain.dependencies {
-      implementation(project(":frontend-decompose-logic"))
+      implementation(project(":frontend-logic"))
 
       implementation(libs.dev.frontend.compose.runtime)
       implementation(libs.dev.frontend.compose.ui)
@@ -31,9 +31,6 @@ kotlin {
       implementation(libs.dev.frontend.compose.materialIconsCore)
       implementation(libs.dev.frontend.compose.resources)
       implementation(libs.dev.frontend.compose.uiToolingPreview)
-
-      implementation(libs.dev.frontend.decomposeCompose)
-      implementation(libs.dev.frontend.decomposeComposeExperimental)
 
       implementation(libs.dev.frontend.navigation3.ui)
       implementation(libs.dev.frontend.navigation3.runtime)

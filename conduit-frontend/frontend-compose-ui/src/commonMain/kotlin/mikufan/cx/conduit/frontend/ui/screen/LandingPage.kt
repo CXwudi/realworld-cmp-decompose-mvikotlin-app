@@ -35,7 +35,6 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
-import mikufan.cx.conduit.frontend.logic.component.landing.LandingPageComponent
 import mikufan.cx.conduit.frontend.logic.component.landing.LandingPageIntent
 import mikufan.cx.conduit.frontend.logic.component.landing.LandingPageLabel
 import mikufan.cx.conduit.frontend.logic.component.landing.LandingPageState
@@ -51,20 +50,6 @@ fun LandingPage(viewModel: LandingViewModel, modifier: Modifier = Modifier) {
     state = viewModel.state,
     labels = viewModel.labels,
     onSend = viewModel::send,
-    modifier = modifier,
-  )
-}
-
-/**
- * Backward compatibility overload taking legacy [LandingPageComponent].
- * Keeps existing previews and callers viable.
- */
-@Composable
-fun LandingPage(component: LandingPageComponent, modifier: Modifier = Modifier) {
-  LandingPage(
-    state = component.state,
-    labels = component.labels,
-    onSend = component::send,
     modifier = modifier,
   )
 }

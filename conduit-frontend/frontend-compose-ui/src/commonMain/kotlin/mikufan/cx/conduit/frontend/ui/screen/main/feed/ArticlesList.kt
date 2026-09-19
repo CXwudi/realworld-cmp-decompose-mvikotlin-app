@@ -1,6 +1,5 @@
 package mikufan.cx.conduit.frontend.ui.screen.main.feed
 
-import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -66,9 +65,9 @@ import kotlinx.datetime.number
 import kotlinx.datetime.toLocalDateTime
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticleBasicInfo
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticleInfo
-import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListComponent
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListIntent
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListLabel
+import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListState
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListViewModel
 import mikufan.cx.conduit.frontend.logic.component.main.feed.LoadMoreState
 import mikufan.cx.conduit.frontend.ui.common.BouncingDotsLoading
@@ -80,7 +79,25 @@ fun ArticlesList(
   viewModel: ArticlesListViewModel,
   modifier: Modifier = Modifier,
 ) {
-  val articlesListState = viewModel.state.collectAsState()
+  ArticlesList(
+    state = viewModel.state,
+    labels = viewModel.labels,
+    onSend = viewModel::send,
+    modifier = modifier,
+  )
+}
+
+/**
+ * Plain state/intent Composable contract for Articles list.
+ */
+@Composable
+fun ArticlesList(
+  state: kotlinx.coroutines.flow.StateFlow<ArticlesListState>,
+  labels: Flow<ArticlesListLabel>,
+  onSend: (ArticlesListIntent) -> Unit,
+  modifier: Modifier = Modifier,
+) {
+  val articlesListState = state.collectAsState()
   val collectedThumbInfosState = remember {
     derivedStateOf { articlesListState.value.collectedThumbInfos }
   }
@@ -91,55 +108,21 @@ fun ArticlesList(
   val gridState = rememberLazyGridState()
 
   ArticlesListLoadEffect(
-    onLoadMore = { viewModel.send(ArticlesListIntent.LoadMore) },
+    onLoadMore = { onSend(ArticlesListIntent.LoadMore) },
     itemsState = collectedThumbInfosState,
     loadStateState = loadMoreStateState,
-    gridState = gridState
+    gridState = gridState,
   )
   ArticlesListGrid(
     itemsState = collectedThumbInfosState,
     loadStateState = loadMoreStateState,
     gridState = gridState,
-    onItemClick = { detail -> viewModel.send(ArticlesListIntent.ClickOnArticle(detail)) },
+    onItemClick = { detail -> onSend(ArticlesListIntent.ClickOnArticle(detail)) },
     modifier = modifier,
   )
 
   // Handle error label: label and show error message as pop up
-  ArticlesListErrorAlert(viewModel.labels)
-}
-
-/**
- * Legacy Decompose overload retained for previews and backwards compatibility.
- */
-@Composable
-fun AnimatedVisibilityScope.ArticlesList(component: ArticlesListComponent) {
-  val articlesListState = component.state.collectAsState()
-  val articlesListLabel = component.labels
-  val collectedThumbInfosState = remember {
-    derivedStateOf { articlesListState.value.collectedThumbInfos }
-  }
-  val loadMoreStateState = remember {
-    derivedStateOf { articlesListState.value.loadMoreState }
-  }
-
-  val gridState = rememberLazyGridState()
-
-  ArticlesListLoadEffect(
-    onLoadMore = { component.send(ArticlesListIntent.LoadMore) },
-    itemsState = collectedThumbInfosState,
-    loadStateState = loadMoreStateState,
-    gridState = gridState
-  )
-  ArticlesListGrid(
-    itemsState = collectedThumbInfosState,
-    loadStateState = loadMoreStateState,
-    gridState = gridState,
-    onItemClick = { detail -> component.send(ArticlesListIntent.ClickOnArticle(detail)) }
-  )
-
-  // Handle error label: label and show error message as pop up
-  ArticlesListErrorAlert(articlesListLabel)
-
+  ArticlesListErrorAlert(labels)
 }
 
 @Composable
@@ -191,22 +174,6 @@ private fun ArticlesListLoadEffect(
       onLoadMore()
     }
   }
-}
-
-@Composable
-private fun AnimatedVisibilityScope.ArticlesListGrid(
-  itemsState: State<List<ArticleInfo>>,
-  loadStateState: State<LoadMoreState>,
-  gridState: LazyGridState,
-  onItemClick: (ArticleBasicInfo) -> Unit
-) {
-  ArticlesListGrid(
-    itemsState = itemsState,
-    loadStateState = loadStateState,
-    gridState = gridState,
-    onItemClick = onItemClick,
-    modifier = Modifier.animateEnterExit(),
-  )
 }
 
 @Composable

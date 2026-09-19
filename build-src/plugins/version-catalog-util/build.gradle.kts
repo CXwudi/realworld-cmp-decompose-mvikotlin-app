@@ -22,13 +22,6 @@ buildConfig {
     // Coroutines
     buildConfigStringField("CoroutinesBom", libs.dev.coroutinesBom)
 
-    // Essenty
-    buildConfigStringField("EssentyLifecycleCoroutines", libs.dev.frontend.essentyLifecycleCoroutines)
-
-    // Decompose
-    buildConfigStringField("Decompose", libs.dev.frontend.decompose)
-    buildConfigStringField("DecomposeCompose", libs.dev.frontend.decomposeCompose)
-
     // Compose Multiplatform
     buildConfigStringField("ComposeRuntime", libs.dev.frontend.compose.runtime)
     buildConfigStringField("ComposeUi", libs.dev.frontend.compose.ui)
@@ -41,7 +34,7 @@ buildConfig {
     buildConfigStringField("ComposeDesktopCommon", libs.dev.frontend.compose.desktopCommon)
 
     // MVI Kotlin
-    // likely this is only needed for decompose-logic module
+    // likely this is only needed for frontend-logic module
 //    buildConfigStringField("MviKotlin", libs.dev.frontend.mvikotlin)
 //    buildConfigStringField("MviKotlinMain", libs.dev.frontend.mvikotlinMain)
 //    buildConfigStringField("MviKotlinCoroutines", libs.dev.frontend.mvikotlinCoroutines)

@@ -21,9 +21,7 @@ kotlin {
       implementation(Libs.ComposeFoundation)
       implementation(Libs.ComposeMaterial3)
       implementation(Libs.ComposeResources)
-      // decompose + mvikotlin
-      implementation(Libs.Decompose)
-      implementation(Libs.DecomposeCompose)
+      // logging
       implementation(Libs.KotlinLogging)
       // koin
       implementation(project.dependencies.platform(Libs.KoinBom))

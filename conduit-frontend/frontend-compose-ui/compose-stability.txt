@@ -1,6 +1,6 @@
 // Consider kotlin collections stable
 kotlin.collections.*
-// Consider all decompose component and model class stable
+// Consider all logic component, viewModel and model classes stable
 mikufan.cx.conduit.frontend.logic.component.**
 // Koin container
 org.koin.core.Koin

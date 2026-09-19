@@ -23,7 +23,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import kotlinx.coroutines.flow.StateFlow
-import mikufan.cx.conduit.frontend.logic.component.main.me.AddArticleComponent
 import mikufan.cx.conduit.frontend.logic.component.main.me.AddArticleIntent
 import mikufan.cx.conduit.frontend.logic.component.main.me.AddArticleState
 import mikufan.cx.conduit.frontend.logic.component.main.me.AddArticleViewModel
@@ -32,24 +31,18 @@ import mikufan.cx.conduit.frontend.ui.theme.LocalSpace
 
 @Composable
 fun AddArticlePage(viewModel: AddArticleViewModel, modifier: Modifier = Modifier) {
-  AddArticlePageContent(
+  AddArticlePage(
     stateFlow = viewModel.state,
     onSend = viewModel::send,
     modifier = modifier,
   )
 }
 
+/**
+ * Plain state/intent Composable contract for Add article page.
+ */
 @Composable
-fun AddArticlePage(addArticleComponent: AddArticleComponent, modifier: Modifier = Modifier) {
-  AddArticlePageContent(
-    stateFlow = addArticleComponent.state,
-    onSend = addArticleComponent::send,
-    modifier = modifier,
-  )
-}
-
-@Composable
-private fun AddArticlePageContent(
+fun AddArticlePage(
   stateFlow: StateFlow<AddArticleState>,
   onSend: (AddArticleIntent) -> Unit,
   modifier: Modifier = Modifier,

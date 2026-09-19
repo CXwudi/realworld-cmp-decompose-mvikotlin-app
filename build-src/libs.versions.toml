@@ -27,8 +27,6 @@ androidx-navigation3 = "1.1.1"
 androidx-savedstate = "1.4.0"
 robolectric = "4.14.1"
 
-essenty = "2.6.0"
-decompose = "3.5.0"
 mvikotlin = "4.4.0"
 koin = "4.2.2"
 kstore = "1.1.0"
@@ -52,10 +50,6 @@ dev-coroutinesBom = "org.jetbrains.kotlinx:kotlinx-coroutines-bom:1.11.0"
 dev-koinBom = { module = "io.insert-koin:koin-bom", version.ref = "koin" }
 
 # frontend
-dev-frontend-essentyLifecycleCoroutines = { module = "com.arkivanov.essenty:lifecycle-coroutines", version.ref = "essenty" }
-dev-frontend-decompose = { module = "com.arkivanov.decompose:decompose", version.ref = "decompose" }
-dev-frontend-decomposeCompose = { module = "com.arkivanov.decompose:extensions-compose", version.ref = "decompose" }
-dev-frontend-decomposeComposeExperimental = { module = "com.arkivanov.decompose:extensions-compose-experimental", version.ref = "decompose" }
 dev-frontend-mvikotlin = { module = "com.arkivanov.mvikotlin:mvikotlin", version.ref = "mvikotlin" }
 dev-frontend-mvikotlinMain = { module = "com.arkivanov.mvikotlin:mvikotlin-main", version.ref = "mvikotlin" }
 dev-frontend-mvikotlinCoroutines = { module = "com.arkivanov.mvikotlin:mvikotlin-extensions-coroutines", version.ref = "mvikotlin" }

@@ -1,38 +1,83 @@
 # Compose UI
 
-The structure of the UI is basically just following the tree structure of the decompose module. Usually each node in the tree in the decompose module will have a corresponding Composable function in the Compose module.
+The `frontend-compose-ui` module implements the UI layer with Compose Multiplatform, using Jetpack Navigation 3, adaptive layouts, and native ViewModels.
+
+## Navigation & Entry Ownership
+
+1. **Navigation 3 `NavDisplay`**:
+   - Navigation flows (Root navigation, Main navigation tabs, Feed/Favourite list-detail, and Me navigation) use Navigation 3's `NavDisplay`.
+   - **Decorator Order**: Decorators are applied in strict order:
+
+     ```kotlin
+     entryDecorators = listOf(
+       rememberSaveableStateHolderNavEntryDecorator(),
+       rememberViewModelStoreNavEntryDecorator(),
+     )
+     ```
+
+     This order guarantees state save/restore decorators wrap ViewModel store owners properly.
+   - **Entry Initializer Pattern**: Inside each `entry<T>`, ViewModels are retrieved using the assisted factory inside the `viewModel` initializer block:
+
+     ```kotlin
+     entry<MyRoute>(clazzContentKey = { route -> route.key }) { route ->
+       val vm: MyViewModel = viewModel(key = "my_vm_${route.key}") {
+         val savedStateHandle = createSavedStateHandle()
+         dependencies.myViewModelFactory.create(savedStateHandle, ...)
+       }
+       MyScreen(vm)
+     }
+     ```
+
+   - **Back Navigation**: `NavDisplay` uses its direct `onBack` parameter (e.g., `onBack = meNavViewModel::pop`) to route system or stack back events directly to the owning navigator ViewModel.
+2. **Adaptive List-Detail Scene**:
+   - `ArticlesTwoPaneSceneStrategy` switches between a two-pane layout (250dp list pane on wide screens) and a single-pane fallback on compact screens.
+   - Retains active ViewModel instances across resize/rotation and clears removed entries.
+
+## Root Composition Locals
+
+Platforms configure root owners consistently:
+
+- On Android, the hosting Activity provides AndroidX architecture component owners natively.
+- On non-Android targets (Desktop and Web), `DefaultRootCompositionLocalsProvider` supplies explicit, consistent root `LocalViewModelStoreOwner` and `LocalSavedStateRegistryOwner` instances via `RootOwnersHolder`.
+- On Web, `ComposeViewport` natively maps browser focus and document visibility to `LocalLifecycleOwner`.
 
 ## Local Utils
 
-The Compose module contains some our own spacing and padding settings in [`LocalSpace`](../../conduit-frontend/frontend-compose-ui/src/commonMain/kotlin/mikufan/cx/conduit/frontend/ui/theme/Space.kt) composition local. Hence when defining spacing and padding using `.dp` unit, always use the values from the `LocalSpace`, or a formula based on the values, instead of hardcoding the values
+Spacing and padding settings are defined in the [`LocalSpace`](../../conduit-frontend/frontend-compose-ui/src/commonMain/kotlin/mikufan/cx/conduit/frontend/ui/theme/Space.kt) composition local. When defining spacing and padding using `.dp` units, always use values from `LocalSpace` (or formulas derived from them) instead of hardcoding raw values.
 
 ## UI Guidance
 
 ### Padding
 
-The root Composable only contains a `Surface` with `fillMaxSize()` modifier and `background` color set to `MaterialTheme.colorScheme.background` (see [`MainUI.kt`](../../conduit-frontend/frontend-compose-ui/src/commonMain/kotlin/mikufan/cx/conduit/frontend/ui/MainUI.kt)), so no default padding from the root Composable. Each screen should add its own padding.
+The root Composable only contains a `Surface` with `fillMaxSize()` modifier and `background` color set to `MaterialTheme.colorScheme.background` (see [`MainUI.kt`](../../conduit-frontend/frontend-compose-ui/src/commonMain/kotlin/mikufan/cx/conduit/frontend/ui/MainUI.kt)), so there is no default padding from the root Composable. Each screen must specify its own padding.
 
-When using layout such as `Column`, `Row`, `LazyVerticalGrid`, etc, first specify the base spacing using build-in parameters, such as  `verticalArrangement` and `horizontalArrangement` for `Column` for example. Then use `Spacer` with `LocalSpace` composition local if you need to specify some custom spacing between two particular items.
+When using layouts such as `Column`, `Row`, `LazyVerticalGrid`, etc., first specify base spacing using built-in parameters (`verticalArrangement` and `horizontalArrangement`). Use `Spacer` with `LocalSpace` if you need custom spacing between specific items.
 
-For `Column` and `Row`, prefer to only set the padding on the direction. For example, a `Row` should only set `modifier.padding(horizontal = LocalSpace.current...)` and a `Column` should only set `modifier.padding(vertical = LocalSpace.current...)`. This gives maximum flexibility to the layout setup. For example, if a single page is simply just applied a `Column` layout and you want to add padding to all 4 sides, then the `Column` itself can only set vertical padding. To add the horizontal padding, apply it either on each child Composable, or wrap each child Composable with a `Box`/`Row` and apply the padding on the `Box`/`Row`.
+For `Column` and `Row`, prefer to only set padding in the primary direction. For example, a `Row` should set `modifier.padding(horizontal = LocalSpace.current...)` and a `Column` should set `modifier.padding(vertical = LocalSpace.current...)`. This provides maximum layout flexibility. If a single page uses a `Column` layout and requires padding on all 4 sides, the `Column` itself sets vertical padding, while horizontal padding is applied on child Composables or wrapping `Box`/`Row` elements.
 
-When using lazy layouts such as `LazyRow`, `LazyColumn`, `LazyVerticalGrid`, etc, prefer to use `contentPadding` parameter instead of `padding` modifier, so that contents can scroll under the system bar, camera, etc. Padding application rule is the same as `Column` and `Row`, `LazyRow` should only set horizontal padding, and `LazyColumn` should only set vertical padding. However, `LazyXXXGrid` is the exception where it make sense to set both horizontal and vertical padding.
+When using lazy layouts (`LazyRow`, `LazyColumn`, `LazyVerticalGrid`), prefer `contentPadding` over `modifier.padding()` so content can scroll underneath system bars and navigation rails. `LazyRow` sets horizontal content padding, `LazyColumn` sets vertical content padding, and `LazyVerticalGrid` sets both horizontal and vertical content padding.
 
-### Edge to Edge (A.k.a. WindowInsets)
+### Edge to Edge (WindowInsets)
 
-The Android app has `enableEdgeToEdge()` and we don't have a global one-fit-all WindowInsets padding on root Composable. Instead, each screen setup its own WindowInsets padding. Usually, applying `WindowInsets.safeDrawing` and `WindowInsets.ime` is enough.
+The Android app enables `enableEdgeToEdge()` and does not use a single global WindowInsets padding on the root Composable. Instead, each screen manages its own WindowInsets padding (typically `WindowInsets.safeDrawing` and `WindowInsets.ime`).
 
-When applied `WindowInsets` padding, check if the current or parent layout already have some padding other than `WindowInsets` applied (typically `modifier.padding()`, `Scaffold`'s inner padding, etc). If so, use `consumeWindowInsets` so that the `WindowInsets` padding will not be added to the existing padding. Otherwise, it will cause double padding.
+When applying `WindowInsets` padding, check whether parent layouts already apply padding (e.g., `Scaffold` inner padding). If so, use `consumeWindowInsets` so insets are not double-counted.
 
-For lazy layouts such as `LazyRow`, `LazyColumn`, `LazyVerticalGrid`, etc, that has a `contentPadding` parameter, to apply both `WindowInsets` and `LocalSpace` padding to the `contentPadding`, you can use `.asPaddingValues()` on `WindowInsets` (e.g. `WindowInsets.safeDrawing.asPaddingValues()`) and do a `max()` operation with `LocalSpace` padding on each side of the padding, to form a new `PaddingValues` that can be passed to `contentPadding`.
+For lazy layouts with a `contentPadding` parameter, combine `WindowInsets` and `LocalSpace` padding by using `.asPaddingValues()` (e.g. `WindowInsets.safeDrawing.asPaddingValues()`) and computing `max()` with `LocalSpace` padding on each dimension.
 
-## Compose Guidance
+## State Observation & Previews
 
-### `State<T>` Usage
+### `State<T>` and `derivedStateOf` Usage
 
-In a Composable function that has a Decompose Component as a parameter, of course we will retrieve the state using `val state by component.state.collectAsState()`.
-However, any field retrieved from the Decompose state must use `remember` and `derivedStateOf`, in order to avoid recomposition.
-For example, use `val emailState: State<String> = remember { derivedStateOf { state.email } }` instead of `val email: String = state.email`.
+When observing ViewModel state in Composables, retrieve the state using `val state by viewModel.state.collectAsState()`.
+Any sub-field retrieved from state should use `remember` and `derivedStateOf` to prevent unnecessary recomposition:
 
-When creating Composable that need to pass retrieved fields delegated from `state`, prefer to pass the `State<T>` variable instead of the `T` variable. This is because `State<T>` is traded as an immutable variable by Compose. Hence value changes in `State<T>` will not trigger a whole recomposition of the Composable like `T` does. And only the part of the Composable that actually read the `State<T>` will be recomposed.
+```kotlin
+val emailState: State<String> = remember { derivedStateOf { state.email } }
+```
 
+When passing retrieved fields to child Composables, prefer passing the `State<T>` variable rather than the raw value `T`. This allows Compose to skip recomposition of parent Composables when only the child reading `State<T>` needs updating.
+
+### Preview Contracts
+
+Screens expose lightweight plain state/intent Composable overloads (e.g. `LandingPage(state, labels, onSend)`, `MainNavScaffold(state, onSend) { ... }`, `AuthPage(stateFlow, labelsFlow, onSend)`). Tooling previews and UI snapshot tests instantiate these contracts directly with `MutableStateFlow`, avoiding mock DI graphs or synthetic ViewModel instances.

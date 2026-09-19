@@ -5,7 +5,7 @@ plugins {
 }
 
 dependencies {
-  implementation(project(":frontend-decompose-logic"))
+  implementation(project(":frontend-logic"))
   implementation(project(":frontend-compose-ui"))
 
   // Explicitly declare dependencies we directly import in MainActivity/MainApplication

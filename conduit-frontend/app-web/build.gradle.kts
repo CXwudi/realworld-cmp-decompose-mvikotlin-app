@@ -17,7 +17,7 @@ kotlin {
 
   sourceSets {
     commonMain.dependencies {
-      implementation(project(":frontend-decompose-logic"))
+      implementation(project(":frontend-logic"))
       implementation(project(":frontend-compose-ui"))
 
       implementation(project.dependencies.platform(libs.dev.frontend.kotlinWrapper))

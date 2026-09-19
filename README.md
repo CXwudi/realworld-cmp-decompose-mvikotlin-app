@@ -1,14 +1,14 @@
 # ![RealWorld Example App](logo.png)
 
-> <h3>Compose Multiplatform + Decompose + MVIKotlin codebase containing real world examples (CRUD, auth, advanced patterns, etc) that adheres to the <a href="https://github.com/gothinkster/realworld">RealWorld</a> spec and API. </h3>
+> <h3>Compose Multiplatform + Jetpack Navigation 3 + AndroidX/CMP ViewModel + MVIKotlin codebase containing real world examples (CRUD, auth, advanced patterns, etc) that adheres to the <a href="https://github.com/gothinkster/realworld">RealWorld</a> spec and API. </h3>
 
-| Phone | Desktop | Web|
-|---|---|---|
+| Phone                                                                       | Desktop                                                                                              | Web                                                                                              |
+|-----------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------|
 | ![Phone App Screenshot](diagram/screenshots/Screenshot_20240911_105149.png) | ![Desktop App Screenshot](diagram/screenshots/Screenshot%202025-01-11%20230957.png) Click to enlarge | ![Web App Screenshot](diagram/screenshots/Screenshot%202025-01-11%20231502.png) Click to enlarge |
 
-This codebase was created to demonstrate a minimal frontend application built with **[Compose Multiplatform](https://www.jetbrains.com/lp/compose-multiplatform/)** and **[Decompose](https://arkivanov.github.io/Decompose/)** and **[MVIKotlin](https://arkivanov.github.io/MVIKotlin/)**, including CRUD operations, authentication, routing, pagination, and more.
+This codebase was created to demonstrate a minimal frontend application built with **[Compose Multiplatform](https://www.jetbrains.com/lp/compose-multiplatform/)**, **[Navigation 3](https://developer.android.com/guide/navigation/navigation-3)**, **[AndroidX/CMP ViewModel](https://developer.android.com/topic/libraries/architecture/viewmodel)**, and **[MVIKotlin](https://arkivanov.github.io/MVIKotlin/)**, including CRUD operations, authentication, routing, pagination, and more.
 
-We've gone to great lengths to adhere to the community styleguides & best practices of **Compose Multiplatform**, **Decompose** and **MVIKotlin**.
+We've gone to great lengths to adhere to the community styleguides & best practices of **Compose Multiplatform**, **Jetpack Navigation 3**, **AndroidX ViewModels**, and **MVIKotlin** (see [frontend architecture documentation](common-doc/frontend/frontend-logic.md)).
 
 For more information on how this works with other frontends/backends, head over to the [RealWorld](https://github.com/gothinkster/realworld) repo.
 

@@ -38,7 +38,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
-import mikufan.cx.conduit.frontend.logic.component.main.auth.AuthPageComponent
 import mikufan.cx.conduit.frontend.logic.component.main.auth.AuthPageIntent
 import mikufan.cx.conduit.frontend.logic.component.main.auth.AuthPageLabel
 import mikufan.cx.conduit.frontend.logic.component.main.auth.AuthPageMode
@@ -47,13 +46,12 @@ import mikufan.cx.conduit.frontend.logic.component.main.auth.AuthViewModel
 import mikufan.cx.conduit.frontend.ui.common.PasswordTextField
 import mikufan.cx.conduit.frontend.ui.common.layout.PageColumn
 import mikufan.cx.conduit.frontend.ui.theme.LocalSpace
-
 @Composable
 fun AuthPage(
   viewModel: AuthViewModel,
   modifier: Modifier = Modifier,
 ) {
-  AuthPageContent(
+  AuthPage(
     stateFlow = viewModel.state,
     labelsFlow = viewModel.labels,
     onSend = viewModel::send,
@@ -63,19 +61,6 @@ fun AuthPage(
 
 @Composable
 fun AuthPage(
-  component: AuthPageComponent,
-  modifier: Modifier = Modifier,
-) {
-  AuthPageContent(
-    stateFlow = component.state,
-    labelsFlow = component.labels,
-    onSend = component::send,
-    modifier = modifier,
-  )
-}
-
-@Composable
-private fun AuthPageContent(
   stateFlow: StateFlow<AuthPageState>,
   labelsFlow: Flow<AuthPageLabel>,
   onSend: (AuthPageIntent) -> Unit,

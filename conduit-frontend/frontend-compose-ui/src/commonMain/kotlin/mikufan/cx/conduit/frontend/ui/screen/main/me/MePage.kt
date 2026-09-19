@@ -49,7 +49,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import androidx.window.core.layout.WindowWidthSizeClass
 import kotlinx.coroutines.flow.StateFlow
-import mikufan.cx.conduit.frontend.logic.component.main.me.MePageComponent
 import mikufan.cx.conduit.frontend.logic.component.main.me.MePageIntent
 import mikufan.cx.conduit.frontend.logic.component.main.me.MePageState
 import mikufan.cx.conduit.frontend.logic.component.main.me.MePageViewModel
@@ -64,32 +63,28 @@ import mikufan.cx.conduit.frontend.ui.theme.LocalSpace
  */
 @Composable
 fun MePage(viewModel: MePageViewModel, modifier: Modifier = Modifier) {
-  MePageScaffold(
-    onButtonClick = { viewModel.send(MePageIntent.AddArticle) },
-  ) { paddingValues ->
-    MePageContent(
-      stateFlow = viewModel.state,
-      onSend = viewModel::send,
-      paddingValues = paddingValues,
-      modifier = modifier,
-    )
-  }
+  MePage(
+    state = viewModel.state,
+    onSend = viewModel::send,
+    modifier = modifier,
+  )
 }
 
 /**
- * The main composable for the Me page that displays the user's profile using legacy [MePageComponent].
- *
- * @param mePageComponent The component that manages the Me page's state and logic
- * @param modifier Optional modifier for customizing the layout
+ * Plain state/intent Composable contract for Me page.
  */
 @Composable
-fun MePage(mePageComponent: MePageComponent, modifier: Modifier = Modifier) {
+fun MePage(
+  state: StateFlow<MePageState>,
+  onSend: (MePageIntent) -> Unit,
+  modifier: Modifier = Modifier,
+) {
   MePageScaffold(
-    onButtonClick = { mePageComponent.send(MePageIntent.AddArticle) },
+    onButtonClick = { onSend(MePageIntent.AddArticle) },
   ) { paddingValues ->
     MePageContent(
-      stateFlow = mePageComponent.state,
-      onSend = mePageComponent::send,
+      stateFlow = state,
+      onSend = onSend,
       paddingValues = paddingValues,
       modifier = modifier,
     )

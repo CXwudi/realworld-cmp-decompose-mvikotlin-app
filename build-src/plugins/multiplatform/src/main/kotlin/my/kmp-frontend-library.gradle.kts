@@ -8,7 +8,7 @@ import my.util.Versions
  * Common Kotlin Multiplatform setup for frontend modules,
  * built on top of [my.kmp-library] with frontend specific common dependencies.
  *
- * Spcifically, it adds Coroutines, Decompose, Ktor, Koin, and Kotlin Logging.
+ * Specifically, it adds Coroutines, Ktor, Koin, and Kotlin Logging.
  *
  * Must not contain any Compose Multiplatform related dependencies.
  * Failing to do so will break the WASM target unit tests for non-compose gradle modules.
@@ -23,8 +23,6 @@ kotlin {
     commonMain.dependencies {
       implementation(project.dependencies.platform(Libs.CoroutinesBom))
       implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core")
-      implementation(Libs.EssentyLifecycleCoroutines)
-      implementation(Libs.Decompose)
       implementation(Libs.KotlinLogging)
       implementation(project.dependencies.platform(Libs.KoinBom))
       implementation("io.insert-koin:koin-core")

@@ -23,7 +23,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import kotlinx.coroutines.flow.StateFlow
-import mikufan.cx.conduit.frontend.logic.component.main.me.EditProfileComponent
 import mikufan.cx.conduit.frontend.logic.component.main.me.EditProfileIntent
 import mikufan.cx.conduit.frontend.logic.component.main.me.EditProfileState
 import mikufan.cx.conduit.frontend.logic.component.main.me.EditProfileViewModel
@@ -33,24 +32,18 @@ import mikufan.cx.conduit.frontend.ui.theme.LocalSpace
 
 @Composable
 fun EditProfilePage(viewModel: EditProfileViewModel, modifier: Modifier = Modifier) {
-  EditProfilePageContent(
+  EditProfilePage(
     stateFlow = viewModel.state,
     onSend = viewModel::send,
     modifier = modifier,
   )
 }
 
+/**
+ * Plain state/intent Composable contract for Edit profile page.
+ */
 @Composable
-fun EditProfilePage(editProfileComponent: EditProfileComponent, modifier: Modifier = Modifier) {
-  EditProfilePageContent(
-    stateFlow = editProfileComponent.state,
-    onSend = editProfileComponent::send,
-    modifier = modifier,
-  )
-}
-
-@Composable
-private fun EditProfilePageContent(
+fun EditProfilePage(
   stateFlow: StateFlow<EditProfileState>,
   onSend: (EditProfileIntent) -> Unit,
   modifier: Modifier = Modifier,
