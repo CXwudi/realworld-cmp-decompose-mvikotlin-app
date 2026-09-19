@@ -37,8 +37,6 @@ graph TD
 - **Root Gating from KStore**: `RootViewModel` observes `UserConfigKStore`. When a valid server URL is configured, it transitions from the Landing screen to `MainNav`.
 - **Interactive Navigation with MVIKotlin**: Interactive navigation is managed by MVIKotlin stores (`MainNavStore`, `ArticlesNavStore`, `MeNavStore`).
 - **Authoritative Auth Wins**: Current auth/server credentials always take precedence. If authentication state changes, restored navigation states reconcile against current account status.
-- **Tab Replacement Lifecycle**: Switching top-level tabs destroys the prior tab's child route tree. Incrementing the `generation` counter on `MainChildRoute` assigns distinct entry identities across rapid tab switches, ensuring the replaced route tree is disposed.
-- **No Saved Form Caches**: Form inputs, unsaved article drafts, and passwords do not persist across tab switching or process death.
 - **Synchronous Navigation Labels**: One-off navigation events are emitted as labels by the business store, synchronously subscribed by the owning leaf ViewModel during initialization, and forwarded to the parent navigation coordinator (e.g., `ArticlesNavViewModel`, `MeNavViewModel`).
 - **ArticlesNav Constraints**: Feed and Favourite flows enforce a strict 1-2 entry stack constraint (`List` or `List + Detail`). Selecting an already open article is a no-op; selecting a different article replaces the detail entry; closing an article requires a matching entry ID to guard against stale events; the root list can never be popped.
 - **MeNav Flows**: Manages user profile display (`MePageViewModel`), profile editing (`EditProfileViewModel`), and article creation (`AddArticleViewModel`).

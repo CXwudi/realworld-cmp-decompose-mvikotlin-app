@@ -42,8 +42,3 @@ For LLM: Kotlin is not properly configured in VSCode, so ignore any Kotlin impor
 - [Docker](https://www.docker.com/) - for backend services
 - [GitHub](https://github.com/) - git and CI
 - [draw.io](https://www.drawio.com/) - for diagrams
-
-### AI Tools
-
-- [Cline](https://cline.bot/): Autonomous coding agent right in your IDE
-- [Augment Code](https://www.augmentcode.com/): AI-powered coding platform for professional software engineers
