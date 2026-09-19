@@ -22,8 +22,8 @@ kotlin {
     compileSdk = Versions.AndroidCompileSdk
     minSdk = Versions.AndroidMinSdk
     // namespace will be set in consumer modules
+    withHostTest {}
   }
-  // Gradle 9.4 `archives` deprecation is currently emitted by Kotlin MPP internals when creating JVM artifacts.
   jvm()
   js {
     browser {
@@ -99,6 +99,6 @@ java {
 // convenient way to automatically update yarn.lock if dep changes
 plugins.withType<YarnPlugin> {
   the<org.jetbrains.kotlin.gradle.targets.js.yarn.YarnRootExtension>().apply {
-    yarnLockAutoReplace = true
+    yarnLockAutoReplaceProperty.set(true)
   }
 }

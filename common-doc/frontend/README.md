@@ -40,4 +40,6 @@ flowchart TD
 
 ## About Testing
 
-`conduit-frontend` contains multiplatform tests that run on all 4 platforms. However, tests on the JS and Wasm platform require a browser, so far `useChromiumHeadless()` is defined in [`kmp-library.gradle.kts`](build-src/plugins/multiplatform-library/src/main/kotlin/my/kmp-library.gradle.kts), which means you need to install Chromium/Chrome for running tests on the JS platform. If you have another browser, feel free to change to `useFirefox()` (or any other browser supported by Karma) for your convenience.
+`conduit-frontend` contains multiplatform tests that run on all 4 platforms. The shared [`kmp-library.gradle.kts`](../../build-src/plugins/multiplatform/src/main/kotlin/my/kmp-library.gradle.kts) convention enables Android host tests with `withHostTest {}`, so `commonTest` also runs on the Android target. From `conduit-frontend`, run `./gradlew :conduit-common:testAndroidHostTest :frontend-decompose-logic:testAndroidHostTest` to execute these tests without an emulator.
+
+Tests on the JS and Wasm platforms require a browser. The same convention uses `useChromiumHeadless()` locally, which means you need to install Chromium/Chrome for running tests on these platforms. If you have another browser, feel free to change to `useFirefox()` (or any other browser supported by Karma) for your convenience.
