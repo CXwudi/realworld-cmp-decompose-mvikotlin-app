@@ -6,7 +6,11 @@ import mikufan.cx.conduit.frontend.logic.component.legacy.LegacyMainAdapterViewM
 import mikufan.cx.conduit.frontend.logic.component.main.MainNavViewModelFactory
 import mikufan.cx.conduit.frontend.logic.component.main.auth.AuthViewModelFactory
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesPanelNavComponentFactory
+import mikufan.cx.conduit.frontend.logic.component.main.me.AddArticleViewModelFactory
+import mikufan.cx.conduit.frontend.logic.component.main.me.EditProfileViewModelFactory
 import mikufan.cx.conduit.frontend.logic.component.main.me.MeNavComponentFactory
+import mikufan.cx.conduit.frontend.logic.component.main.me.MeNavViewModelFactory
+import mikufan.cx.conduit.frontend.logic.component.main.me.MePageViewModelFactory
 import mikufan.cx.conduit.frontend.logic.component.root.RootViewModelFactory
 
 /**
@@ -21,6 +25,10 @@ class AppDependencies(
   val legacyChildAdapterViewModelFactory: LegacyChildAdapterViewModelFactory,
   val articleListDetailComponentFactory: ArticlesPanelNavComponentFactory,
   val meNavComponentFactory: MeNavComponentFactory,
+  val meNavViewModelFactory: MeNavViewModelFactory,
+  val mePageViewModelFactory: MePageViewModelFactory,
+  val editProfileViewModelFactory: EditProfileViewModelFactory,
+  val addArticleViewModelFactory: AddArticleViewModelFactory,
   val legacyMainAdapterViewModelFactory: LegacyMainAdapterViewModelFactory,
   val onShutdown: () -> Unit = {},
 )

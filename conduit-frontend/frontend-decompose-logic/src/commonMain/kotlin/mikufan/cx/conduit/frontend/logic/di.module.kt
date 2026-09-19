@@ -31,6 +31,10 @@ fun createAppDependencies(
   legacyChildAdapterViewModelFactory = koin.get(),
   articleListDetailComponentFactory = koin.get(),
   meNavComponentFactory = koin.get(),
+  meNavViewModelFactory = koin.get(),
+  mePageViewModelFactory = koin.get(),
+  editProfileViewModelFactory = koin.get(),
+  addArticleViewModelFactory = koin.get(),
   legacyMainAdapterViewModelFactory = koin.get(),
   onShutdown = onShutdown,
 )

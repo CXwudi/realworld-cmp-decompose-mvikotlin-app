@@ -21,10 +21,15 @@ import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListStoreFa
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesPanelNavComponentFactory
 import mikufan.cx.conduit.frontend.logic.component.main.me.AddArticleComponentFactory
 import mikufan.cx.conduit.frontend.logic.component.main.me.AddArticleStoreFactory
+import mikufan.cx.conduit.frontend.logic.component.main.me.AddArticleViewModelFactory
 import mikufan.cx.conduit.frontend.logic.component.main.me.EditProfileComponentFactory
 import mikufan.cx.conduit.frontend.logic.component.main.me.EditProfileStoreFactory
+import mikufan.cx.conduit.frontend.logic.component.main.me.EditProfileViewModelFactory
 import mikufan.cx.conduit.frontend.logic.component.main.me.MeNavComponentFactory
+import mikufan.cx.conduit.frontend.logic.component.main.me.MeNavStoreFactory
+import mikufan.cx.conduit.frontend.logic.component.main.me.MeNavViewModelFactory
 import mikufan.cx.conduit.frontend.logic.component.main.me.MePageComponentFactory
+import mikufan.cx.conduit.frontend.logic.component.main.me.MePageViewModelFactory
 import mikufan.cx.conduit.frontend.logic.component.main.me.MeStoreFactory
 import mikufan.cx.conduit.frontend.logic.component.root.RootViewModelFactory
 import mikufan.cx.conduit.frontend.logic.service.serviceModule
@@ -42,6 +47,7 @@ val storeModule = module {
   single { LandingPageStoreFactory(get(), get()) }
   single { MainNavStoreFactory(get(), get()) }
   single { AuthPageStoreFactory(get(), get()) }
+  single { MeNavStoreFactory(get()) }
   single { MeStoreFactory(get(), get()) }
   single { EditProfileStoreFactory(get(), get()) }
   single { AddArticleStoreFactory(get(), get()) }
@@ -59,6 +65,10 @@ val componentFactoryModule = module {
   singleOf(::LandingViewModelFactory)
   singleOf(::MainNavViewModelFactory)
   singleOf(::AuthViewModelFactory)
+  singleOf(::MeNavViewModelFactory)
+  singleOf(::MePageViewModelFactory)
+  singleOf(::EditProfileViewModelFactory)
+  singleOf(::AddArticleViewModelFactory)
   singleOf(::LegacyChildAdapterViewModelFactory)
   singleOf(::LegacyMainAdapterViewModelFactory)
   singleOf(::DefaultMainNavComponentFactory) bind MainNavComponentFactory::class

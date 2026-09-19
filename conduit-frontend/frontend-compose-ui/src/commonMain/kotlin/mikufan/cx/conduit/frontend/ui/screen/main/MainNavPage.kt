@@ -38,6 +38,7 @@ import mikufan.cx.conduit.frontend.logic.component.main.auth.AuthViewModel
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListDetailNavComponent
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesSearchFilter
 import mikufan.cx.conduit.frontend.logic.component.main.me.MeNavComponent
+import mikufan.cx.conduit.frontend.logic.component.main.me.MeNavViewModel
 import mikufan.cx.conduit.frontend.ui.screen.main.auth.AuthPage
 import mikufan.cx.conduit.frontend.ui.screen.main.feed.ArticlesListDetailPanel
 import mikufan.cx.conduit.frontend.ui.screen.main.me.MeNavPage
@@ -128,20 +129,17 @@ fun MainNavPage(
           entry<MainChildRoute.Me>(
             clazzContentKey = { meRoute -> "Me_${meRoute.generation}" },
           ) { meRoute ->
-            val adapter: LegacyChildAdapterViewModel<MeNavComponent> = viewModel(
-              key = "LegacyMe_${meRoute.generation}",
+            val meNavViewModel: MeNavViewModel = viewModel(
+              key = "MeNav_${meRoute.generation}",
             ) {
               val savedStateHandle = createSavedStateHandle()
-              dependencies.legacyChildAdapterViewModelFactory.create(
-                savedStateHandle = savedStateHandle,
-                saveKey = "legacy_me",
-              ) { ctx ->
-                dependencies.meNavComponentFactory.create(ctx)
-              }
+              dependencies.meNavViewModelFactory.create(savedStateHandle)
             }
-            LegacySubtreeHost(adapter) { child ->
-              MeNavPage(child)
-            }
+            MeNavPage(
+              meNavViewModel = meNavViewModel,
+              dependencies = dependencies,
+              modifier = Modifier.fillMaxSize(),
+            )
           }
 
           entry<MainChildRoute.Auth>(

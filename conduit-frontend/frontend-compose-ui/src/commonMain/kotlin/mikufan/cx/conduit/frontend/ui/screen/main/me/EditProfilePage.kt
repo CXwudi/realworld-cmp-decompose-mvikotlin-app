@@ -22,15 +22,40 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import kotlinx.coroutines.flow.StateFlow
 import mikufan.cx.conduit.frontend.logic.component.main.me.EditProfileComponent
 import mikufan.cx.conduit.frontend.logic.component.main.me.EditProfileIntent
+import mikufan.cx.conduit.frontend.logic.component.main.me.EditProfileState
+import mikufan.cx.conduit.frontend.logic.component.main.me.EditProfileViewModel
 import mikufan.cx.conduit.frontend.ui.common.PasswordTextField
 import mikufan.cx.conduit.frontend.ui.common.layout.PageColumn
 import mikufan.cx.conduit.frontend.ui.theme.LocalSpace
 
 @Composable
+fun EditProfilePage(viewModel: EditProfileViewModel, modifier: Modifier = Modifier) {
+  EditProfilePageContent(
+    stateFlow = viewModel.state,
+    onSend = viewModel::send,
+    modifier = modifier,
+  )
+}
+
+@Composable
 fun EditProfilePage(editProfileComponent: EditProfileComponent, modifier: Modifier = Modifier) {
-  val model by editProfileComponent.state.collectAsState()
+  EditProfilePageContent(
+    stateFlow = editProfileComponent.state,
+    onSend = editProfileComponent::send,
+    modifier = modifier,
+  )
+}
+
+@Composable
+private fun EditProfilePageContent(
+  stateFlow: StateFlow<EditProfileState>,
+  onSend: (EditProfileIntent) -> Unit,
+  modifier: Modifier = Modifier,
+) {
+  val model by stateFlow.collectAsState()
 
   PageColumn(
     modifier = modifier
@@ -42,7 +67,7 @@ fun EditProfilePage(editProfileComponent: EditProfileComponent, modifier: Modifi
     val errorMsgState = remember { derivedStateOf { model.errorMsg } }
 
     IconButton(
-      onClick = { editProfileComponent.send(EditProfileIntent.BackWithoutSave) },
+      onClick = { onSend(EditProfileIntent.BackWithoutSave) },
       modifier = Modifier
         .align(Alignment.Start)
         .padding(horizontal = LocalSpace.current.horizontal.padding)
@@ -55,7 +80,7 @@ fun EditProfilePage(editProfileComponent: EditProfileComponent, modifier: Modifi
 
     OutlinedTextField(
       value = username,
-      onValueChange = { editProfileComponent.send(EditProfileIntent.UsernameChanged(it)) },
+      onValueChange = { onSend(EditProfileIntent.UsernameChanged(it)) },
       label = { Text("Username") },
       singleLine = true,
       modifier = Modifier
@@ -65,7 +90,7 @@ fun EditProfilePage(editProfileComponent: EditProfileComponent, modifier: Modifi
 
     OutlinedTextField(
       value = bio,
-      onValueChange = { editProfileComponent.send(EditProfileIntent.BioChanged(it)) },
+      onValueChange = { onSend(EditProfileIntent.BioChanged(it)) },
       label = { Text("Bio") },
       modifier = Modifier
         .fillMaxWidth()
@@ -74,7 +99,7 @@ fun EditProfilePage(editProfileComponent: EditProfileComponent, modifier: Modifi
 
     OutlinedTextField(
       value = imageUrl,
-      onValueChange = { editProfileComponent.send(EditProfileIntent.ImageUrlChanged(it)) },
+      onValueChange = { onSend(EditProfileIntent.ImageUrlChanged(it)) },
       label = { Text("Image URL") },
       singleLine = true,
       modifier = Modifier
@@ -84,14 +109,14 @@ fun EditProfilePage(editProfileComponent: EditProfileComponent, modifier: Modifi
 
     PasswordTextField(
       passwordProvider = passwordState,
-      onPasswordChanged = { editProfileComponent.send(EditProfileIntent.PasswordChanged(it)) },
+      onPasswordChanged = { onSend(EditProfileIntent.PasswordChanged(it)) },
       modifier = Modifier
         .fillMaxWidth()
         .padding(horizontal = LocalSpace.current.horizontal.padding),
     )
 
     Button(
-      onClick = { editProfileComponent.send(EditProfileIntent.Save) },
+      onClick = { onSend(EditProfileIntent.Save) },
       modifier = Modifier.padding(horizontal = LocalSpace.current.horizontal.padding),
     ) {
       Text("Save")
