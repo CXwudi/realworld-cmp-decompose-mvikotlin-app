@@ -25,7 +25,7 @@ multiplatform-markdown-renderer = "0.45.0"
 androidx-lifecycle = "2.11.0"
 androidx-navigation3 = "1.1.1"
 androidx-savedstate = "1.4.0"
-robolectric = "4.14.1"
+robolectric = "4.16.1"
 
 mvikotlin = "4.4.0"
 koin = "4.2.2"
