@@ -9,7 +9,11 @@ Install Android Studio and IntelliJ IDEA, then:
 - Frontend: Open the [`conduit-frontend`](../conduit-frontend) directory in Android Studio.
 - Backend: Open the [`conduit-backend`](../conduit-backend) directory in IntelliJ IDEA.
 
+The Gradle Java toolchains and CI use Java 25. The shared toolchain version is configured in [`build-src/libs.versions.toml`](../build-src/libs.versions.toml).
+
 ## How it works
+
+See [Continuous integration](./ci.md) for test triggers and how merged PRs avoid duplicate test runs.
 
 The project is divided into 4 modules:
 

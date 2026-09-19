@@ -11,7 +11,7 @@
 [versions]
 kotlin = "2.4.20"
 ksp = "2.3.12"
-java = "21"
+java = "25"
 agp = "9.4.0" # ! if using Android plugin in IDEA, need to switch to a version that IDEA supports
 android-compileSdk = "37"
 android-targetSdk = "36" # setting targetSdk on per with compileSdk has great benefits, such as layout inspector

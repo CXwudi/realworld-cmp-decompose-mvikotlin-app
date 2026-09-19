@@ -3,16 +3,45 @@ name: Http4k Backend Tests
 on:
   push:
     branches:
-      - main
       - master
-      - 'renovate/**'
-    paths:
-      - 'conduit-backend/**'
-      - 'build-src/**'
-  workflow_dispatch:
+  pull_request:
+    branches:
+      - master
+    types: [opened, synchronize, reopened, ready_for_review, edited]
+
+permissions:
+  contents: read
+  actions: read
+  pull-requests: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
+  check-master:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    outputs:
+      run-tests: ${{ steps.check.outputs.result }}
+    steps:
+      - uses: actions/checkout@v7
+      - name: Check whether the merged PR already passed this suite
+        id: check
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const shouldRun = require('./.github/scripts/ci-should-run.cjs');
+            return await shouldRun({ github, context, core, workflowId: 'http4k-backend-test.yml' });
+
   test:
+    needs: check-master
+    if: >-
+      !cancelled() && (
+        (github.event_name == 'push' && needs.check-master.outputs.run-tests != 'false') ||
+        (github.event_name == 'pull_request' &&
+          github.event.pull_request.state == 'open' && !github.event.pull_request.draft)
+      )
     runs-on: ubuntu-latest
 
     env:
@@ -52,7 +81,7 @@ jobs:
     - name: Set up JDK
       uses: actions/setup-java@v6
       with:
-        java-version: '21'
+        java-version: '25'
         distribution: 'temurin'
 
     - name: Run Database Migrations
