@@ -267,4 +267,37 @@ class MainNavStoreTest {
     assertTrue(initialState.menuItems.contains(MainNavMenuItem.Feed))
     assertTrue(initialState.menuItems.contains(MainNavMenuItem.SignInUp))
   }
+
+  @Test
+  fun testLandingStateTransitionResetsToGuestState() = runTest(testDispatcher) {
+    val stateChannel = Channel<MainNavState>()
+
+    // Given - start with logged in state
+    val userInfo = UserInfo(
+      email = "test@example.com",
+      username = "testuser",
+      bio = null,
+      image = null,
+      token = "test-token"
+    )
+
+    val disposable = mainNavStore.states(observer(onNext = { this.launch { stateChannel.send(it) } }))
+    mainNavStore.init()
+    userConfigStateChannel.send(UserConfigState.OnLogin("test-url", userInfo))
+    stateChannel.receive() // initial state
+    val loggedIn = stateChannel.receive() // logged in state
+    assertTrue(loggedIn.isLoggedIn)
+
+    // When - KStore resets to Landing while MainNav is active (e.g. exit animation / race before disposal)
+    userConfigStateChannel.send(UserConfigState.Landing)
+
+    // Then - must be benign and reset to guest state, avoiding fatal exception
+    val resetState = stateChannel.receive()
+    assertFalse(resetState.isLoggedIn)
+    assertEquals(2, resetState.menuItems.size)
+    assertTrue(resetState.menuItems.contains(MainNavMenuItem.Feed))
+    assertTrue(resetState.menuItems.contains(MainNavMenuItem.SignInUp))
+
+    disposable.dispose()
+  }
 }

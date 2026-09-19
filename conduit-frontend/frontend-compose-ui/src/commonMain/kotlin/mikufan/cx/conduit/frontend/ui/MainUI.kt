@@ -10,18 +10,19 @@ import coil3.ImageLoader
 import coil3.compose.setSingletonImageLoaderFactory
 import coil3.request.crossfade
 import coil3.svg.SvgDecoder
-import mikufan.cx.conduit.frontend.logic.component.DefaultRootNavComponent
+import mikufan.cx.conduit.frontend.logic.AppDependencies
 import mikufan.cx.conduit.frontend.ui.screen.RootNavigation
+import mikufan.cx.conduit.frontend.ui.util.ProvideRootCompositionLocals
 import mikufan.cx.conduit.frontend.ui.util.SetupUI
-import org.koin.compose.KoinContext
-import org.koin.compose.KoinIsolatedContext
-import org.koin.core.Koin
-import org.koin.core.KoinApplication
 
+/**
+ * Top-level application setup and entry point.
+ * Initializes singleton ImageLoader and renders [MainUI] with plain [AppDependencies].
+ * Free of any Koin types or Koin context wrappers.
+ */
 @Composable
 fun setupAndStartMainUI(
-  koinApp: KoinApplication,
-  rootComponent: DefaultRootNavComponent,
+  dependencies: AppDependencies,
 ) {
   setSingletonImageLoaderFactory { context ->
     ImageLoader.Builder(context)
@@ -31,24 +32,25 @@ fun setupAndStartMainUI(
       .crossfade(true)
       .build()
   }
-  KoinIsolatedContext(context = koinApp) { // currently unused, but added in case if we need it
-    MainUI(rootComponent)
-  }
+  MainUI(dependencies)
 }
 
+/**
+ * Root UI surface hosting [RootNavigation].
+ */
 @Composable
 fun MainUI(
-  rootComponent: DefaultRootNavComponent,
+  dependencies: AppDependencies,
 ) {
-  SetupUI {
-    Surface(
-      Modifier
-        .fillMaxSize()
-        .background(MaterialTheme.colorScheme.background)
-      // no windows padding adding here, all child UI please add ur own padding
-    ) {
-      RootNavigation(rootComponent)
+  ProvideRootCompositionLocals {
+    SetupUI {
+      Surface(
+        Modifier
+          .fillMaxSize()
+          .background(MaterialTheme.colorScheme.background)
+      ) {
+        RootNavigation(dependencies)
+      }
     }
   }
 }
-

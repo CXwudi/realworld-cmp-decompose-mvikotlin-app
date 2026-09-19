@@ -3,46 +3,26 @@ package mikufan.cx.conduit.frontend.app.desktop
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
-import com.arkivanov.decompose.DefaultComponentContext
-import com.arkivanov.decompose.extensions.compose.lifecycle.LifecycleController
-import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import io.github.oshai.kotlinlogging.KotlinLogging
-import jdk.internal.net.http.common.Utils.close
-import mikufan.cx.conduit.frontend.app.desktop.util.runOnUiThread
-import mikufan.cx.conduit.frontend.logic.allModules
-import mikufan.cx.conduit.frontend.logic.component.RootNavComponentFactory
 import mikufan.cx.conduit.frontend.ui.setupAndStartMainUI
-import org.koin.dsl.koinApplication
-
-fun initKoin() = koinApplication {
-  modules(allModules)
-}
 
 fun main(args: Array<String>) {
-  val lifecycle = LifecycleRegistry()
-  val defaultComponentContext = runOnUiThread {
-    DefaultComponentContext(lifecycle = lifecycle)
-  }
-  val koinApp = initKoin()
-  val rootComponent = runOnUiThread {
-    koinApp.koin.get<RootNavComponentFactory>().create(defaultComponentContext)
-  }
+  val dependencies = initDesktopAppDependencies()
 
   log.info { "Starting" }
 
   application {
-
     val windowState = rememberWindowState()
-    LifecycleController(lifecycle, windowState)
 
     Window(
       onCloseRequest = {
-        koinApp.close()
+        dependencies.onShutdown()
         exitApplication()
       },
       title = "Conduit Desktop",
+      state = windowState,
     ) {
-      setupAndStartMainUI(koinApp, rootComponent)
+      setupAndStartMainUI(dependencies)
     }
   }
 }

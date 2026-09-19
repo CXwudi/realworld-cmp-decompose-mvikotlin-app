@@ -4,6 +4,9 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
 import mikufan.cx.conduit.frontend.logic.component.landing.LandingPageComponentFactory
 import mikufan.cx.conduit.frontend.logic.component.landing.LandingPageStoreFactory
+import mikufan.cx.conduit.frontend.logic.component.landing.LandingViewModelFactory
+import mikufan.cx.conduit.frontend.logic.component.legacy.LegacyMainAdapterViewModelFactory
+import mikufan.cx.conduit.frontend.logic.component.main.DefaultMainNavComponentFactory
 import mikufan.cx.conduit.frontend.logic.component.main.MainNavComponentFactory
 import mikufan.cx.conduit.frontend.logic.component.main.MainNavStoreFactory
 import mikufan.cx.conduit.frontend.logic.component.main.auth.AuthPageComponentFactory
@@ -20,8 +23,10 @@ import mikufan.cx.conduit.frontend.logic.component.main.me.EditProfileStoreFacto
 import mikufan.cx.conduit.frontend.logic.component.main.me.MeNavComponentFactory
 import mikufan.cx.conduit.frontend.logic.component.main.me.MePageComponentFactory
 import mikufan.cx.conduit.frontend.logic.component.main.me.MeStoreFactory
+import mikufan.cx.conduit.frontend.logic.component.root.RootViewModelFactory
 import mikufan.cx.conduit.frontend.logic.service.serviceModule
 import org.koin.core.module.dsl.singleOf
+import org.koin.dsl.bind
 import org.koin.dsl.module
 
 /**
@@ -46,8 +51,11 @@ val storeModule = module {
  */
 val componentFactoryModule = module {
   singleOf(::RootNavComponentFactory)
+  singleOf(::RootViewModelFactory)
   singleOf(::LandingPageComponentFactory)
-  singleOf(::MainNavComponentFactory)
+  singleOf(::LandingViewModelFactory)
+  singleOf(::LegacyMainAdapterViewModelFactory)
+  singleOf(::DefaultMainNavComponentFactory) bind MainNavComponentFactory::class
   singleOf(::AuthPageComponentFactory)
   singleOf(::MeNavComponentFactory)
   singleOf(::MePageComponentFactory)

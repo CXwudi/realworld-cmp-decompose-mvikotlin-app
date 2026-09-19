@@ -66,7 +66,7 @@ class DefaultMainNavComponent(
     childStack(
       source = stackNavigation,
       initialConfiguration = enumToConfig(store.state.currentMenuItem),
-      serializer = null,
+      serializer = Config.serializer(),
       childFactory = ::childFactory
     )
 
@@ -80,8 +80,11 @@ class DefaultMainNavComponent(
   private suspend fun setupUserConfigStateToNavigationMapping() {
     store.states
       .collectLatest {
-        log.debug { "Switching to $it" }
-        stackNavigation.replaceCurrent(enumToConfig(it.currentMenuItem))
+        val targetConfig = enumToConfig(it.currentMenuItem)
+        if (childStack.value.active.configuration != targetConfig) {
+          log.debug { "Switching to $it" }
+          stackNavigation.replaceCurrent(targetConfig)
+        }
       }
   }
 
@@ -130,13 +133,17 @@ class DefaultMainNavComponent(
   }
 }
 
-class MainNavComponentFactory(
+fun interface MainNavComponentFactory {
+  fun create(componentContext: ComponentContext): MainNavComponent
+}
+
+class DefaultMainNavComponentFactory(
   private val storeFactory: MainNavStoreFactory,
   private val articleListDetailComponentFactory: ArticlesPanelNavComponentFactory,
   private val authPageComponentFactory: AuthPageComponentFactory,
   private val meNavComponentFactory: MeNavComponentFactory,
-) {
-  fun create(componentContext: ComponentContext) = DefaultMainNavComponent(
+) : MainNavComponentFactory {
+  override fun create(componentContext: ComponentContext): MainNavComponent = DefaultMainNavComponent(
     componentContext = componentContext,
     mainNavStoreFactory = storeFactory,
     articleListDetailComponentFactory = articleListDetailComponentFactory,

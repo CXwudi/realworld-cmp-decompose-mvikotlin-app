@@ -13,6 +13,7 @@ buildConfig {
     buildConfigIntField("AndroidCompileSdk", libs.versions.android.compileSdk)
     buildConfigIntField("AndroidTargetSdk", libs.versions.android.targetSdk)
     buildConfigIntField("AndroidMinSdk", libs.versions.android.minSdk)
+    buildConfigStringField("AndroidxLifecycle", libs.versions.androidx.lifecycle)
   }
   forClass(packageName = "my.util", className = "Libs") {
     // Serialization

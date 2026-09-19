@@ -36,6 +36,11 @@ kotlin {
       implementation(libs.dev.frontend.mvikotlinCoroutines)
       implementation(libs.dev.frontend.mvikotlinLogging)
 
+      implementation(libs.dev.frontend.androidx.lifecycle.common)
+      implementation(libs.dev.frontend.androidx.lifecycle.viewmodel)
+      implementation(libs.dev.frontend.androidx.lifecycle.viewmodelSavedstate)
+      implementation(libs.dev.frontend.androidx.savedstate)
+
       implementation(libs.dev.frontend.kstore)
       implementation(dependencies.platform(libs.dev.frontend.ktorBom))
       implementation("io.ktor:ktor-client-core")
@@ -71,6 +76,10 @@ kotlin {
 
     iosMain.dependencies {
       implementation(libs.dev.frontend.kstore.file)
+    }
+
+    androidHostTest.dependencies {
+      implementation(libs.dev.frontend.test.robolectric)
     }
   }
 }

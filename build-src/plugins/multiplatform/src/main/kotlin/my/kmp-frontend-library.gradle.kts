@@ -2,6 +2,7 @@ package my
 
 import dev.mokkery.MockMode
 import my.util.Libs
+import my.util.Versions
 
 /**
  * Common Kotlin Multiplatform setup for frontend modules,
@@ -67,4 +68,12 @@ kotlin {
 
 mokkery {
   defaultMockMode = MockMode.autoUnit
+}
+
+configurations.configureEach {
+  resolutionStrategy.eachDependency {
+    if (requested.group == "org.jetbrains.androidx.lifecycle" || requested.group == "androidx.lifecycle") {
+      useVersion(Versions.AndroidxLifecycle)
+    }
+  }
 }

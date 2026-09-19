@@ -73,7 +73,10 @@ class MainNavStoreFactory(
       launch {
         userConfigKStore.userConfigFlow.collect { userConfigState ->
           val action = when (userConfigState) {
-            is UserConfigState.Landing -> throw IllegalStateException("Should not be Landing state after coming to MainNav")
+            is UserConfigState.Landing -> {
+              log.debug { "UserConfig transitioned to Landing while MainNav active; resetting to guest state" }
+              Action.SwitchToNotLoggedIn
+            }
             is UserConfigState.OnUrl -> Action.SwitchToNotLoggedIn
             is UserConfigState.OnLogin -> Action.SwitchToLoggedIn(userConfigState.userInfo.username)
           }
