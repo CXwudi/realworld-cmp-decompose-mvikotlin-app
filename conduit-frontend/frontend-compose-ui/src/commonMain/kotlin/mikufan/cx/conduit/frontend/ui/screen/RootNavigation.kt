@@ -12,10 +12,10 @@ import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import mikufan.cx.conduit.frontend.logic.AppDependencies
 import mikufan.cx.conduit.frontend.logic.component.landing.LandingViewModel
-import mikufan.cx.conduit.frontend.logic.component.legacy.LegacyMainAdapterViewModel
+import mikufan.cx.conduit.frontend.logic.component.main.MainNavViewModel
 import mikufan.cx.conduit.frontend.logic.component.root.RootRoute
 import mikufan.cx.conduit.frontend.logic.component.root.RootViewModel
-import mikufan.cx.conduit.frontend.ui.screen.main.LegacyMainPage
+import mikufan.cx.conduit.frontend.ui.screen.main.MainNavPage
 
 /**
  * Root navigation host using Navigation 3 and native ViewModels.
@@ -70,13 +70,13 @@ fun RootNavigation(
         entry<RootRoute.Main>(
           clazzContentKey = { mainRoute -> "Main:${mainRoute.serverUrl}" },
         ) { mainRoute ->
-          val legacyMainAdapter: LegacyMainAdapterViewModel = viewModel(
-            key = "LegacyMain:${mainRoute.serverUrl}"
+          val mainNavViewModel: MainNavViewModel = viewModel(
+            key = "MainNav:${mainRoute.serverUrl}",
           ) {
             val savedStateHandle = createSavedStateHandle()
-            dependencies.legacyMainAdapterViewModelFactory.create(savedStateHandle)
+            dependencies.mainNavViewModelFactory.create(savedStateHandle)
           }
-          LegacyMainPage(legacyMainAdapter)
+          MainNavPage(mainNavViewModel, dependencies)
         }
       }
     )

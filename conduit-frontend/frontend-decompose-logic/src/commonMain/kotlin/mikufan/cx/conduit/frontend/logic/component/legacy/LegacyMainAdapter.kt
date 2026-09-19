@@ -24,11 +24,11 @@ import kotlinx.serialization.json.Json
 import mikufan.cx.conduit.frontend.logic.component.main.MainNavComponent
 import mikufan.cx.conduit.frontend.logic.component.main.MainNavComponentFactory
 
-private const val KEY_LEGACY_MAIN_SAVED_STATE = "legacy_main_saved_state"
+const val KEY_LEGACY_MAIN_SAVED_STATE = "legacy_main_saved_state"
 private const val KEY_JSON_PAYLOAD = "json_payload"
 
 /**
- * Entry-owned legacy adapter ViewModel hosting the existing Main Decompose subtree.
+ * Entry-owned legacy adapter ViewModel hosting an arbitrary legacy Decompose subtree [T].
  *
  * Responsibilities:
  * - Retains the legacy component and its stores across Android configuration changes (rotation).
@@ -37,9 +37,10 @@ private const val KEY_JSON_PAYLOAD = "json_payload"
  * - Provides authoritative back dispatching via [backDispatcher].
  * - Destroys legacy stores and lifecycle when cleared.
  */
-class LegacyMainAdapterViewModel(
-  mainNavComponentFactory: MainNavComponentFactory,
-  private val savedStateHandle: SavedStateHandle,
+open class LegacyChildAdapterViewModel<T : Any>(
+  savedStateHandle: SavedStateHandle,
+  saveKey: String = KEY_LEGACY_MAIN_SAVED_STATE,
+  factory: (ComponentContext) -> T,
 ) : ViewModel() {
 
   val lifecycleRegistry = LifecycleRegistry()
@@ -48,12 +49,11 @@ class LegacyMainAdapterViewModel(
 
   val stateKeeper: StateKeeperDispatcher
 
-  val mainNavComponent: MainNavComponent
+  val component: T
 
   init {
-    // 1. Attempt to restore state from SavedStateHandle
     val restoredContainer: SerializableContainer? = runCatching {
-      savedStateHandle.get<SavedState>(KEY_LEGACY_MAIN_SAVED_STATE)?.read {
+      savedStateHandle.get<SavedState>(saveKey)?.read {
         if (contains(KEY_JSON_PAYLOAD)) {
           val json = getString(KEY_JSON_PAYLOAD)
           Json.decodeFromString(SerializableContainer.serializer(), json)
@@ -62,14 +62,13 @@ class LegacyMainAdapterViewModel(
         }
       }
     }.getOrElse { e ->
-      log.warn(e) { "Failed to restore legacy Main state from SavedStateHandle, using fresh state" }
+      log.warn(e) { "Failed to restore legacy state for $saveKey from SavedStateHandle, using fresh state" }
       null
     }
 
     stateKeeper = StateKeeperDispatcher(restoredContainer)
 
-    // 2. Register saved state provider to write state snapshots to SavedStateHandle
-    savedStateHandle.setSavedStateProvider(KEY_LEGACY_MAIN_SAVED_STATE) {
+    savedStateHandle.setSavedStateProvider(saveKey) {
       val container = stateKeeper.save()
       val json = Json.encodeToString(SerializableContainer.serializer(), container)
       savedState {
@@ -77,7 +76,6 @@ class LegacyMainAdapterViewModel(
       }
     }
 
-    // 3. Construct DefaultComponentContext
     val componentContext: ComponentContext = DefaultComponentContext(
       lifecycle = lifecycleRegistry,
       stateKeeper = stateKeeper,
@@ -85,8 +83,7 @@ class LegacyMainAdapterViewModel(
       backHandler = backDispatcher,
     )
 
-    // 4. Create the legacy Main subtree
-    mainNavComponent = mainNavComponentFactory.create(componentContext)
+    component = factory(componentContext)
   }
 
   fun handleBack(): Boolean = backDispatcher.back()
@@ -118,7 +115,7 @@ class LegacyMainAdapterViewModel(
 
   /**
    * Called when the Composable host leaves composition.
-   * Stops the legacy lifecycle without destroying it.
+   * Stops the Essenty lifecycle without destroying the retained component.
    */
   fun onHostDisposed() {
     if (lifecycleRegistry.state != com.arkivanov.essenty.lifecycle.Lifecycle.State.DESTROYED) {
@@ -128,14 +125,43 @@ class LegacyMainAdapterViewModel(
 
   override fun onCleared() {
     super.onCleared()
-    log.debug { "Clearing LegacyMainAdapterViewModel: destroying legacy lifecycle and instance keeper" }
-    lifecycleRegistry.destroy()
+    if (lifecycleRegistry.state != com.arkivanov.essenty.lifecycle.Lifecycle.State.DESTROYED) {
+      lifecycleRegistry.destroy()
+    }
     instanceKeeper.destroy()
   }
 }
 
 /**
- * Plain assisted factory for creating [LegacyMainAdapterViewModel].
+ * Plain stateless factory for [LegacyChildAdapterViewModel].
+ */
+class LegacyChildAdapterViewModelFactory {
+  fun <T : Any> create(
+    savedStateHandle: SavedStateHandle,
+    saveKey: String,
+    factory: (ComponentContext) -> T,
+  ): LegacyChildAdapterViewModel<T> =
+    LegacyChildAdapterViewModel(savedStateHandle, saveKey, factory)
+}
+
+/**
+ * Entry-owned legacy adapter ViewModel hosting the existing Main Decompose subtree.
+ * Retained for Phase 1 compatibility.
+ */
+class LegacyMainAdapterViewModel(
+  mainNavComponentFactory: MainNavComponentFactory,
+  savedStateHandle: SavedStateHandle,
+) : LegacyChildAdapterViewModel<MainNavComponent>(
+  savedStateHandle = savedStateHandle,
+  saveKey = KEY_LEGACY_MAIN_SAVED_STATE,
+  factory = { ctx -> mainNavComponentFactory.create(ctx) },
+) {
+  val mainNavComponent: MainNavComponent
+    get() = component
+}
+
+/**
+ * Plain stateless factory for [LegacyMainAdapterViewModel].
  */
 class LegacyMainAdapterViewModelFactory(
   private val mainNavComponentFactory: MainNavComponentFactory,

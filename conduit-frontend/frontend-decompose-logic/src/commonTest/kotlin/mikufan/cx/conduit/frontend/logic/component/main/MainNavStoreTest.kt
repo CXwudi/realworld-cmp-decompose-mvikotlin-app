@@ -25,6 +25,7 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 import kotlin.test.assertFalse
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class MainNavStoreTest {
   private val testDispatcher = StandardTestDispatcher()
   private val userConfigStateChannel = Channel<UserConfigState>(Channel.UNLIMITED)
@@ -120,7 +121,9 @@ class MainNavStoreTest {
     val disposable = mainNavStore.states(observer(onNext = { this.launch { stateChannel.send(it) } }))
     mainNavStore.init()
     userConfigStateChannel.send(UserConfigState.OnUrl("test-url"))
-    stateChannel.receive() // initial state
+    testScheduler.runCurrent()
+    stateChannel.receive() // initial unready state
+    stateChannel.receive() // reconciled guest state
 
     // When - switch to OnLogin (logged in)
     val userInfo = UserInfo(
@@ -131,6 +134,7 @@ class MainNavStoreTest {
       token = "new-token"
     )
     userConfigStateChannel.send(UserConfigState.OnLogin("test-url", userInfo))
+    testScheduler.runCurrent()
 
     // Then - state should switch to logged in
     val newState = stateChannel.receive()
@@ -175,9 +179,11 @@ class MainNavStoreTest {
     // Given - not logged in state (2 menu items: Feed, SignInUp)
     mainNavStore.init()
     userConfigStateChannel.send(UserConfigState.OnUrl("test-url"))
+    testScheduler.runCurrent()
 
     // When - switch to index 1 (SignInUp)
     mainNavStore.accept(MainNavIntent.MenuIndexSwitching(1))
+    testScheduler.runCurrent()
 
     // Then
     assertEquals(1, mainNavStore.state.pageIndex)
@@ -189,6 +195,7 @@ class MainNavStoreTest {
     // Given - not logged in state (2 menu items)
     mainNavStore.init()
     userConfigStateChannel.send(UserConfigState.OnUrl("test-url"))
+    testScheduler.runCurrent()
 
     // When/Then - should throw IllegalArgumentException for index 2 (out of bounds)
     assertFailsWith<IllegalArgumentException> {
@@ -201,6 +208,7 @@ class MainNavStoreTest {
     // Given
     mainNavStore.init()
     userConfigStateChannel.send(UserConfigState.OnUrl("test-url"))
+    testScheduler.runCurrent()
 
     // When/Then - should throw IllegalArgumentException for negative index
     assertFailsWith<IllegalArgumentException> {
@@ -217,10 +225,13 @@ class MainNavStoreTest {
     val disposable = mainNavStore.states(observer(onNext = { this.launch { stateChannel.send(it) } }))
     mainNavStore.init()
     userConfigStateChannel.send(UserConfigState.OnUrl("test-url"))
-    stateChannel.receive() // initial state
+    testScheduler.runCurrent()
+    stateChannel.receive() // initial unready state
+    stateChannel.receive() // reconciled guest state
 
     // When - try to switch to same index
     mainNavStore.accept(MainNavIntent.MenuIndexSwitching(0))
+    testScheduler.runCurrent()
 
     // Then - no state change should occur (channel should not receive anything new)
     assertTrue(stateChannel.isEmpty)
@@ -299,5 +310,176 @@ class MainNavStoreTest {
     assertTrue(resetState.menuItems.contains(MainNavMenuItem.SignInUp))
 
     disposable.dispose()
+  }
+
+  @Test
+  fun testRestorationReconcilesMatchingUserAndTab() = runTest(testDispatcher) {
+    val snapshot = MainNavSavedSnapshot(
+      selectedTab = MainNavTab.ME,
+      accountUsername = "alice",
+      generation = 42L,
+    )
+    val store = MainNavStoreFactory(
+      LoggingStoreFactory(DefaultStoreFactory()),
+      userConfigKStore,
+      testDispatcher,
+    ).createStore(restoredSnapshot = snapshot, autoInit = false)
+
+    val stateChannel = Channel<MainNavState>()
+    val disposable = store.states(observer(onNext = { this.launch { stateChannel.send(it) } }))
+    store.init()
+
+    val initial = stateChannel.receive()
+    assertFalse(initial.isReady)
+    assertEquals(42L, initial.generation)
+
+    val userInfo = UserInfo("alice@test.com", "alice", null, null, "token")
+    userConfigStateChannel.send(UserConfigState.OnLogin("url", userInfo))
+
+    val reconciled = stateChannel.receive()
+    assertTrue(reconciled.isReady)
+    assertEquals(2, reconciled.pageIndex)
+    assertEquals(MainNavMenuItem.Me, reconciled.currentMenuItem)
+    assertEquals(42L, reconciled.generation)
+
+    disposable.dispose()
+    store.dispose()
+  }
+
+  @Test
+  fun testRestorationResetsToFeedOnAccountMismatch() = runTest(testDispatcher) {
+    val snapshot = MainNavSavedSnapshot(
+      selectedTab = MainNavTab.ME,
+      accountUsername = "alice",
+      generation = 42L,
+    )
+    val store = MainNavStoreFactory(
+      LoggingStoreFactory(DefaultStoreFactory()),
+      userConfigKStore,
+      testDispatcher,
+    ).createStore(restoredSnapshot = snapshot, autoInit = false)
+
+    val stateChannel = Channel<MainNavState>()
+    val disposable = store.states(observer(onNext = { this.launch { stateChannel.send(it) } }))
+    store.init()
+
+    stateChannel.receive() // unready initial
+
+    val userInfo = UserInfo("bob@test.com", "bob", null, null, "token")
+    userConfigStateChannel.send(UserConfigState.OnLogin("url", userInfo))
+
+    val reconciled = stateChannel.receive()
+    assertTrue(reconciled.isReady)
+    assertEquals(0, reconciled.pageIndex)
+    assertEquals(MainNavMenuItem.Feed, reconciled.currentMenuItem)
+    assertEquals(43L, reconciled.generation)
+
+    disposable.dispose()
+    store.dispose()
+  }
+
+  @Test
+  fun testRestorationResetsToFeedWhenLoggedOut() = runTest(testDispatcher) {
+    val snapshot = MainNavSavedSnapshot(
+      selectedTab = MainNavTab.ME,
+      accountUsername = "alice",
+      generation = 42L,
+    )
+    val store = MainNavStoreFactory(
+      LoggingStoreFactory(DefaultStoreFactory()),
+      userConfigKStore,
+      testDispatcher,
+    ).createStore(restoredSnapshot = snapshot, autoInit = false)
+
+    val stateChannel = Channel<MainNavState>()
+    val disposable = store.states(observer(onNext = { this.launch { stateChannel.send(it) } }))
+    store.init()
+
+    stateChannel.receive() // unready initial
+
+    userConfigStateChannel.send(UserConfigState.OnUrl("url"))
+
+    val reconciled = stateChannel.receive()
+    assertTrue(reconciled.isReady)
+    assertEquals(0, reconciled.pageIndex)
+    assertEquals(MainNavMenuItem.Feed, reconciled.currentMenuItem)
+    assertEquals(43L, reconciled.generation)
+
+    disposable.dispose()
+    store.dispose()
+  }
+
+  @Test
+  fun testRestorationPreservesGuestSignInUp() = runTest(testDispatcher) {
+    val snapshot = MainNavSavedSnapshot(
+      selectedTab = MainNavTab.SIGN_IN_UP,
+      accountUsername = null,
+      generation = 7L,
+    )
+    val store = MainNavStoreFactory(
+      LoggingStoreFactory(DefaultStoreFactory()),
+      userConfigKStore,
+      testDispatcher,
+    ).createStore(restoredSnapshot = snapshot, autoInit = false)
+
+    val stateChannel = Channel<MainNavState>()
+    val disposable = store.states(observer(onNext = { this.launch { stateChannel.send(it) } }))
+    store.init()
+
+    stateChannel.receive() // unready initial
+
+    userConfigStateChannel.send(UserConfigState.OnUrl("url"))
+
+    val reconciled = stateChannel.receive()
+    assertTrue(reconciled.isReady)
+    assertEquals(1, reconciled.pageIndex)
+    assertEquals(MainNavMenuItem.SignInUp, reconciled.currentMenuItem)
+    assertEquals(7L, reconciled.generation)
+
+    disposable.dispose()
+    store.dispose()
+  }
+
+  @Test
+  fun testMenuIndexSwitchingIncrementsGenerationAndRapidABA() = runTest(testDispatcher) {
+    val stateChannel = Channel<MainNavState>()
+    val disposable = mainNavStore.states(observer(onNext = { this.launch { stateChannel.send(it) } }))
+    mainNavStore.init()
+
+    val userInfo = UserInfo("test@example.com", "testuser", null, null, "token")
+    userConfigStateChannel.send(UserConfigState.OnLogin("test-url", userInfo))
+
+    stateChannel.receive() // initial unready
+    val readyFeed = stateChannel.receive() // reconciled Feed
+    val gen0 = readyFeed.generation
+
+    // Switch A -> B (Feed -> Me)
+    mainNavStore.accept(MainNavIntent.MenuIndexSwitching(2))
+    val stateB = stateChannel.receive()
+    assertEquals(2, stateB.pageIndex)
+    assertEquals(gen0 + 1L, stateB.generation)
+
+    // Repeated tap on B -> no-op
+    mainNavStore.accept(MainNavIntent.MenuIndexSwitching(2))
+    assertTrue(stateChannel.isEmpty)
+
+    // Switch B -> A (Me -> Feed): rapid A->B->A creates brand new generation
+    mainNavStore.accept(MainNavIntent.MenuIndexSwitching(0))
+    val stateA2 = stateChannel.receive()
+    assertEquals(0, stateA2.pageIndex)
+    assertEquals(gen0 + 2L, stateA2.generation)
+
+    disposable.dispose()
+  }
+
+  @Test
+  fun testMenuIndexSwitchingIgnoredBeforeReady() = runTest(testDispatcher) {
+    // Before KStore emits, isReady is false
+    assertFalse(mainNavStore.state.isReady)
+    mainNavStore.accept(MainNavIntent.MenuIndexSwitching(1))
+
+    // Must still be unready and at 0
+    assertFalse(mainNavStore.state.isReady)
+    assertEquals(0, mainNavStore.state.pageIndex)
   }
 }

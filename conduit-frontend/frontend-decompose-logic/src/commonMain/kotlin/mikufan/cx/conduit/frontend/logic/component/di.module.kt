@@ -5,12 +5,15 @@ import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
 import mikufan.cx.conduit.frontend.logic.component.landing.LandingPageComponentFactory
 import mikufan.cx.conduit.frontend.logic.component.landing.LandingPageStoreFactory
 import mikufan.cx.conduit.frontend.logic.component.landing.LandingViewModelFactory
+import mikufan.cx.conduit.frontend.logic.component.legacy.LegacyChildAdapterViewModelFactory
 import mikufan.cx.conduit.frontend.logic.component.legacy.LegacyMainAdapterViewModelFactory
 import mikufan.cx.conduit.frontend.logic.component.main.DefaultMainNavComponentFactory
 import mikufan.cx.conduit.frontend.logic.component.main.MainNavComponentFactory
 import mikufan.cx.conduit.frontend.logic.component.main.MainNavStoreFactory
+import mikufan.cx.conduit.frontend.logic.component.main.MainNavViewModelFactory
 import mikufan.cx.conduit.frontend.logic.component.main.auth.AuthPageComponentFactory
 import mikufan.cx.conduit.frontend.logic.component.main.auth.AuthPageStoreFactory
+import mikufan.cx.conduit.frontend.logic.component.main.auth.AuthViewModelFactory
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticleDetailComponentFactory
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticleDetailStoreFactory
 import mikufan.cx.conduit.frontend.logic.component.main.feed.ArticlesListComponentFactory
@@ -54,6 +57,9 @@ val componentFactoryModule = module {
   singleOf(::RootViewModelFactory)
   singleOf(::LandingPageComponentFactory)
   singleOf(::LandingViewModelFactory)
+  singleOf(::MainNavViewModelFactory)
+  singleOf(::AuthViewModelFactory)
+  singleOf(::LegacyChildAdapterViewModelFactory)
   singleOf(::LegacyMainAdapterViewModelFactory)
   singleOf(::DefaultMainNavComponentFactory) bind MainNavComponentFactory::class
   singleOf(::AuthPageComponentFactory)

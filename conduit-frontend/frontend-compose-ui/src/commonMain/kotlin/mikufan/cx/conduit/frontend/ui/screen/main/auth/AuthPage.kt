@@ -24,37 +24,71 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.StateFlow
 import mikufan.cx.conduit.frontend.logic.component.main.auth.AuthPageComponent
 import mikufan.cx.conduit.frontend.logic.component.main.auth.AuthPageIntent
 import mikufan.cx.conduit.frontend.logic.component.main.auth.AuthPageLabel
 import mikufan.cx.conduit.frontend.logic.component.main.auth.AuthPageMode
+import mikufan.cx.conduit.frontend.logic.component.main.auth.AuthPageState
+import mikufan.cx.conduit.frontend.logic.component.main.auth.AuthViewModel
 import mikufan.cx.conduit.frontend.ui.common.PasswordTextField
 import mikufan.cx.conduit.frontend.ui.common.layout.PageColumn
 import mikufan.cx.conduit.frontend.ui.theme.LocalSpace
 
 @Composable
-fun AuthPage(component: AuthPageComponent, modifier: Modifier = Modifier) {
-  val state by component.state.collectAsState()
+fun AuthPage(
+  viewModel: AuthViewModel,
+  modifier: Modifier = Modifier,
+) {
+  AuthPageContent(
+    stateFlow = viewModel.state,
+    labelsFlow = viewModel.labels,
+    onSend = viewModel::send,
+    modifier = modifier,
+  )
+}
+
+@Composable
+fun AuthPage(
+  component: AuthPageComponent,
+  modifier: Modifier = Modifier,
+) {
+  AuthPageContent(
+    stateFlow = component.state,
+    labelsFlow = component.labels,
+    onSend = component::send,
+    modifier = modifier,
+  )
+}
+
+@Composable
+private fun AuthPageContent(
+  stateFlow: StateFlow<AuthPageState>,
+  labelsFlow: Flow<AuthPageLabel>,
+  onSend: (AuthPageIntent) -> Unit,
+  modifier: Modifier = Modifier,
+) {
+  val state by stateFlow.collectAsState()
   val isRegisterMode = remember { derivedStateOf { state.mode == AuthPageMode.REGISTER } }
 
   val email = remember { derivedStateOf { state.email } }
   val username = remember { derivedStateOf { state.username } }
   val password = remember { derivedStateOf { state.password } }
 
-  showErrorAlert(labels = component.labels)
+  showErrorAlert(labels = labelsFlow)
 
   val paddingLarge = LocalSpace.current.vertical.paddingLarge
 
@@ -68,7 +102,7 @@ fun AuthPage(component: AuthPageComponent, modifier: Modifier = Modifier) {
 
     EmailTextField(
       emailProvider = email,
-      onEmailChanged = { component.send(AuthPageIntent.EmailChanged(it)) },
+      onEmailChanged = { onSend(AuthPageIntent.EmailChanged(it)) },
       modifier = Modifier
         .fillMaxWidth()
         .padding(horizontal = horizontalPadding)
@@ -76,12 +110,10 @@ fun AuthPage(component: AuthPageComponent, modifier: Modifier = Modifier) {
 
     AnimatedVisibility(
       visible = isRegisterMode.value,
-//      enter = fadeIn() + expandVertically(expandFrom = Alignment.Top),
-//      exit = fadeOut() + shrinkVertically(shrinkTowards = Alignment.Top),
     ) {
       OutlinedTextField(
         value = username.value,
-        onValueChange = { component.send(AuthPageIntent.UsernameChanged(it)) },
+        onValueChange = { onSend(AuthPageIntent.UsernameChanged(it)) },
         label = { Text("Username") },
         singleLine = true,
         modifier = Modifier
@@ -92,7 +124,7 @@ fun AuthPage(component: AuthPageComponent, modifier: Modifier = Modifier) {
 
     PasswordTextField(
       passwordProvider = password,
-      onPasswordChanged = { component.send(AuthPageIntent.PasswordChanged(it)) },
+      onPasswordChanged = { onSend(AuthPageIntent.PasswordChanged(it)) },
       modifier = Modifier
         .fillMaxWidth()
         .padding(horizontal = horizontalPadding),
@@ -103,7 +135,7 @@ fun AuthPage(component: AuthPageComponent, modifier: Modifier = Modifier) {
     )
 
     Button(
-      onClick = { component.send(AuthPageIntent.AuthAction) },
+      onClick = { onSend(AuthPageIntent.AuthAction) },
     ) {
       AnimatedText(
         isRegisterMode = isRegisterMode,
@@ -114,8 +146,8 @@ fun AuthPage(component: AuthPageComponent, modifier: Modifier = Modifier) {
 
     SwitchModeRow(
       isRegisterMode = isRegisterMode,
-      onChangeUrlClick = { component.send(AuthPageIntent.BackToLanding) },
-      onSwitchModeClick = { component.send(AuthPageIntent.SwitchMode) },
+      onChangeUrlClick = { onSend(AuthPageIntent.BackToLanding) },
+      onSwitchModeClick = { onSend(AuthPageIntent.SwitchMode) },
       modifier = Modifier
         .fillMaxWidth()
         .padding(horizontal = horizontalPadding)
@@ -172,7 +204,6 @@ private fun AnimatedText(
     remember { derivedStateOf { if (isRegisterMode.value) textForRegisterMode else textForLoginMode } }
   AnimatedContent(
     targetState = text.value,
-//    transitionSpec = { fadeInAndOut() },
   ) {
     Text(it, modifier = modifier)
   }
@@ -180,25 +211,20 @@ private fun AnimatedText(
 
 @Composable
 private fun showErrorAlert(labels: Flow<AuthPageLabel>) {
-  // almost not possible to animate it, as dialog are drawn outside of current tree
-  // see https://github.com/JetBrains/compose-multiplatform/issues/4431
-  
-  val errorMsgState = remember { mutableStateOf("") }
+  val errorMsgState = rememberSaveable { mutableStateOf("") }
   val showErrorAlert by remember { derivedStateOf { errorMsgState.value.isNotBlank() } }
-  
-  val scope = rememberCoroutineScope()
-  scope.launch {
+
+  LaunchedEffect(labels) {
     labels.collect { label ->
       when (label) {
         is AuthPageLabel.Failure -> {
           errorMsgState.value = label.message
         }
-        // Handle other labels if necessary
         else -> {}
       }
     }
   }
-  
+
   if (showErrorAlert) {
     AlertDialog(
       onDismissRequest = { errorMsgState.value = "" },
